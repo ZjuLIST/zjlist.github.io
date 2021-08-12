@@ -1,0 +1,397 @@
+
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <head>
+    <!-- Meta, title, CSS, favicons, etc. -->
+    <meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="浙江大学互联网安全实验室 - 网络安全、智能设备安全、漏洞预警分析、下一代入侵检测及防御取证等。">
+<meta name="author" content="Jarvis W.">
+
+<title>
+  
+    项目小组 &middot; 浙江大学互联网安全实验室
+  
+</title>
+
+  <script type="text/javascript">
+   function funcShow(id){
+    for(var i=0;i<4;i++){
+     var divInfo =document.getElementById('div'+(i+1));
+     divInfo.style.display='none';
+    }
+    var div =document.getElementById('div'+id);
+     div.style.display='block';
+   }
+  </script>
+
+<!-- Bootstrap core CSS 
+  注意：此文件跟随官网最新版本更新，随时会有改变。建议使用下面v3.0.3版本的CDN链接！
+ -->
+<link href="./dist/css/bootstrap.min.css" rel="stylesheet">
+
+<!-- Hi，如果你要在自己的网站上引入bootstrap样式文件的话，请使用当前最新版本v3.0.3的CDN链接，页面加载速度会更快！
+<link rel="stylesheet" href="http://cdn.bootcss.com/twitter-bootstrap/3.0.3/css/bootstrap.min.css">
+-->
+
+<!-- Documentation extras -->
+<link href="./docs-assets/css/docs.css" rel="stylesheet">
+<link href="http://cdn.bootcss.com/highlight.js/7.3/styles/github.min.css" rel="stylesheet">
+<style>
+body{font-family:"ff-tisa-web-pro-1","ff-tisa-web-pro-2","Lucida Grande","Helvetica Neue",Helvetica,Arial,"Hiragino Sans GB","Hiragino Sans GB W3","WenQuanYi Micro Hei",sans-serif;}
+h1, .h1, h2, .h2, h3, .h3, h4, .h4, .lead {font-family:"ff-tisa-web-pro-1","ff-tisa-web-pro-2","Lucida Grande","Helvetica Neue",Helvetica,Arial,"Hiragino Sans GB","Hiragino Sans GB W3","Microsoft YaHei UI","Microsoft YaHei","WenQuanYi Micro Hei",sans-serif;}
+pre code { background: transparent; }
+@media (min-width: 768px) {
+    .bs-docs-home .bs-social, 
+    .bs-docs-home .bs-masthead-links {
+      margin-left: 0;
+    }
+}
+
+.bs-docs-section p {
+	line-height: 2;
+}
+
+.bs-docs-section p.lead {
+	line-height: 1.4;
+}
+
+
+</style>
+
+<!--[if lt IE 9]><script src="../docs-assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
+
+<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+<!--[if lt IE 9]>
+  <script src="http://cdn.bootcss.com/html5shiv/3.7.0/html5shiv.min.js"></script>
+  <script src="http://cdn.bootcss.com/respond.js/1.3.0/respond.min.js"></script>
+<![endif]-->
+
+<!-- Favicons -->
+<link rel="apple-touch-icon-precomposed" sizes="144x144" href="./docs-assets/ico/logo.jpg">
+                               <link rel="shortcut icon" href="./docs-assets/ico/favicon.png">
+
+
+
+  </head>
+  <body>
+    <a class="sr-only" href="#content">Skip to main content</a>
+
+    <!-- Docs master nav -->
+    <header class="navbar navbar-inverse navbar-fixed-top bs-docs-nav" role="banner">
+  <div class="container">
+    <div class="navbar-header">
+      <button class="navbar-toggle" type="button" data-toggle="collapse" data-target=".bs-navbar-collapse">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a href="./" class="navbar-brand">浙江大学互联网安全实验室</a>
+    </div>
+    <nav class="collapse navbar-collapse bs-navbar-collapse" role="navigation">
+      <ul class="nav navbar-nav">
+        <li>
+          <a href="./index.html">实验室简介</a>
+        </li>
+        <li>
+          <a href="./human.html">实验室成员</a>
+        </li>
+        <li class="active">
+          <a href="#">项目小组</a>
+        </li>
+	 <li>
+          <a href="./Internet.html">教授课程</a>
+        </li>
+        <li>
+          <a href="./achievements.html">研究成果</a>
+        </li>
+        <li>
+          <a href="./address.html">地址</a>
+        </li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+          <a href="mailto:ychen@northwestern.edu">联系我们</a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+
+    <!-- Docs page layout -->
+    <div class="bs-header" id="content">
+      <div class="container">
+        <h1>项目小组</h1>
+        <p>项目组研究状况简介。</p>
+        
+      </div>
+    </div>
+
+    <!-- Callout for the old docs link -->
+    
+
+    <div class="container bs-docs-container">
+      <div class="row">
+        <div class="col-md-3">
+          <div class="bs-sidebar hidden-print" role="complementary">
+            <ul class="nav bs-sidenav">
+<li>
+   <a href="#now_project">正在进行的项目</a>           
+   <ul > 
+      <li><a href="javascript:funcShow(1)">针对高级持续性威胁的端点防御与响应系统</a></li>
+      <li><a href="javascript:funcShow(2)">基于程序语言技术的软件漏洞挖掘与预测</a></li>
+      <li>
+        <a href="javascript:funcShow(3)">云安全研究</a>
+<!--        <ul >
+          <li><a href="#sdn">SDN(Software Defined Network)</a></li>
+          <li><a href="#permof">PermOF</a></li>
+        </ul>
+-->
+        </li>
+ 
+ </ul></li>
+
+<li>
+  <a href="#past_project">已完结的项目</a>
+  <ul>
+    <li><a href="javascript:funcShow(4)">汽车电子安全</a></li>
+    <li><a href="javascript:funcShow(5)">智能手机与移动安全</a></li>
+</ul></li>
+
+                                  
+            </ul>
+          </div>
+        </div>
+        <div class="col-md-9" role="main">
+          
+
+  <!-- File structure
+  ================================================== -->
+  
+  <div id="div1" class="bs-docs-section" style="display:block;">
+    <div class="page-header" >
+   <!--   <h1 id="now_project" style="color:BlueViolet">正在进行的项目：</h1>     -->
+    <h2 id="apt"> 针对高级持续性威胁的端点防御与响应系统</h2>
+      </div>
+      <p>APT网络攻击对国家、社会和企业造成了严重的安全威胁和巨大的经济损失。现有研究多针对APT网络攻击的某一阶段提出防御策略，缺少对内在机理、攻击手段和演化规律的理解，难以应对APT网络攻击的持续性、隐蔽性、多样性和动态性发展趋势。为此，本项目针对检测与溯源问题，研究面向APT网络攻击链的智能检测与溯源理论和技术体系。首先研究攻击的数据特征，建立跨层域异构数据的高效采集、存储和融合方法。再次，研究攻击的演进和载体，建立面向APT网络攻击全链和新型载体的智能检测方法。同时，研究攻击的时空演化模型，实现基于时序模式和时空模型的APT网络攻击溯源方法。最后，实现面向APT网络攻击链的智能检测与溯源的原型系统，对提出的理论模型和关键技术进行验证。我们在研发防御黑客攻击的各种手段，涉及到各种各样的任务，例如操作系统的底层实现，大数据的语义分析，快速的智能算法，形象的数据展现等等。我们需要对系统安全或者程序算法或者数据算法有强烈兴趣的同学加入，具备的技能为熟练的C++ 或者Java编程能力和基本的对操作系统的了解。</p>
+      <li>参与者</li>
+      <ul>
+      <li>杨润青</li>
+      <li>熊春霖</li>
+      <li>李振源</li>
+      <li>徐立恒</li>
+      <li>阮琳琦</li>
+      <li>吴尚</li>
+      </ul>
+  </div>
+
+
+
+
+  <div id="div2" class="bs-docs-section" style="display:none">
+    <div class="page-header">
+      
+      <h2 id="codeanalysis">基于程序语言技术的软件漏洞挖掘与预测</h2>
+      </div>
+      <p>　　软件漏洞的发现与定位是计算机科学领域的一个经典研究课题。基于程序语言技术（Program Language）的代码检查及验证方面的研究已进行了数十年，积累了大量研究成果，主要解决方法包括代码审计，自动化测试，以及静态分析灯。然而，随着计算机软件规模的不断扩大，传统的软件测试方法已不足以胜任此类任务，尤其对于基于程序语言技术的方法，在大规模自动化测试方面，其扩展性存在瓶颈。因此，尽管该领域的研究已有数十年，但软件漏洞的数量并没有减少。</p>
+      <p>　　本项目从全新的角度研究软件缺陷(bug)/漏洞(vulnerability)的快速定位及准确预测的问题。经过多年的研究积累，加之随着软件规模的不断扩大，代码重用率的 不断提高，使我们有理由相信，软件的已知漏洞能够为发现未知漏洞提供有效参考信息。通过对不同软件组件的关联程度分析，基于安全漏洞数据库（security advisories）获取的大量历史数据，并借鉴机器学习，数据挖掘领域取得的成果以及程序语言分析技术，使软件漏洞的大规模自动化定位和预测成为可能。</p>
+
+  <div class="page-header" >
+      <h2>团队组成</h2>
+  </div>
+      
+		<h4>
+			何博远（浙江大学）<br>
+			Vaibhav Rastogi（Northwestern University）<br>
+			曹寅志（Columbia University）<br>
+			陈焰（浙江大学/Northwestern University）<br>
+			V.N. Venkatakrishnan（University of Illinois at Chicago）<br>
+			杨润青（浙江大学）<br>
+			张振瑞（浙江大学）<br>
+		</h4>
+	<div class="page-header" >
+      <h2>研究成果</h2>
+    </div>	
+	<p>　　SSL作为一种广泛使用的安全协议，已经成为当今互联网通信的主流标准之一，它为双方通信的完整性和机密性提供了可靠保障。SSL连接的安全性依赖公钥密码体制（PKI），在SSL连接建立的握手阶段，通信双方需要对对方证书进行校验，用以确定双方身份真实有效。然而在实际应用中，由于SSL证书验证过程逻辑过于复杂，普通的应用程序开发者大多依赖成熟的开源库（如JSSE，OpenSSL和GnuTLS），而这些开源库为适应不同用户的需求，都提供了大量的API接口，以GnuTLS为例，仅在证书验证过程中涉及的API接口函数就超过了10个，并且不同的API接口函数之间往往有着复杂的逻辑关联和依赖。研究表明，SSL开源库中证书认证相关API接口存在设计不合理的问题，导致开发者在调用这些接口过程中，未严格按照规范，导致证书认证逻辑出现错误，有可能将非法证书予以放行。此类安全漏洞，将可能导致原本安全的通信信道被黑客监听（图1），从而严重威胁用户数据及隐私的安全。
+	</p>
+	<p><center>
+	<img src="./docs-assets/images/MITM.jpg" alt="中间人攻击示例" border=0><br>
+	图1：中间人攻击示例
+	</center></p>
+	
+	
+	<p>	　　利用静态代码分析技术，我们实现了基于程序依赖图（PDG）结构的自动化漏洞扫描及定位。利用开源软件的包管理器系统(package manager)，我们对流行的Linux发行版系统Ubuntu/Debian中数百个软件包进行了PDG建模。同时，针对两类SSL认证漏洞进行抽象，用于大规模扫描。
+实验结果发现，最新版本的Ubuntu/Debian软件仓库中，存在大量的SSL 0-day漏洞（目前我们确认了27个），主要集中在IRC客户端，邮件客户端等应用程序中，给用户隐私安全造成了严重的威胁。目前，所有漏洞均已提交开源社区，部分已得到修复。相关成果发表在信息安全领域国际顶级会议IEEE S&P 2015上。
+	</p>
+	<p>	　　以下为利用我们发现的2个漏洞完成中间人攻击的演示视频。
+	</p>
+	<p>
+	<center>
+		<embed src="http://player.youku.com/player.php/sid/XODkwODc4MDk2/v.swf" allowFullScreen="true" quality="high" width="800" height="600" align="middle" allowScriptAccess="always" type="application/x-shockwave-flash"></embed>
+	</center>
+	</p>
+	<p><center>Demo1：针对IRC软件Epic4/5的SSL中间人攻击，黑客可获取IRC客户端全部明文通信数据。</center></p>
+	<p>
+	<center>
+		<embed src="http://player.youku.com/player.php/sid/XODkwODgzODQw/v.swf" allowFullScreen="true" quality="high" width="800" height="600" align="middle" allowScriptAccess="always" type="application/x-shockwave-flash"></embed>
+	</center>
+	</p>
+	<p><center>Demo2：针对邮件客户端xfce4-mailwatch-plugin的SSL中间人攻击，黑客可获取邮件客户端全部明文通信数据。</center></p>
+	
+    
+  
+  
+  </div>
+  <div id="div3" class="bs-docs-section" style="display:none">
+    <div class="paper-header">
+      <h2 id="sdn_secure">云安全研究</h2>
+    </div>
+    <p>　本项目主要研究云服务和软件定义网络（SDN）的安全问题，研究微服务和docker等安全问题，并从网络控制器、OpenFlow协议等方面提高SDN网络在数据中心等大型网络中应用的安全性。</p>
+    <br>
+  
+<li>参与者</li>
+<ul>
+<li>冷雪</li>
+<li>李星</li>
+
+</ul>
+    
+   <div class="page-header" >
+		<h2>发表作品</h2>
+	</div>  
+    <p>1. Kai Bu, Xitao Wen, Bo Yang, Yan Chen, Li Erran Li, Xiaolin Chen. <a href="http://www.cs.northwestern.edu/~ychen/Papers/infocom16.pdf">Is Every Flow on The Right Track?: Inspect SDN Forwarding with RuleScope	</a>, in the Proc. of IEEE INFOCOM, 2016 </p>
+    <p>2. Xitao Wen, Bo Yang, Yan Chen, Li Erran Li, Kai Bu, Peng Zheng, Yang Yang, Chengchen Hu. <a href="http://www.cs.northwestern.edu/~ychen/Papers/ICDCS16.pdf">RuleTris: Minimizing Rule Update Latency for TCAM-based SDN Switches	</a>, in the Proc. of IEEE ICDCS, 2016 </p>
+    <p>3. Xitao Wen, Bo Yang, Yan Chen, Chengchen Hu, Yi Wang, Bin Liu, Xiaolin Chen. <a href="http://www.cs.northwestern.edu/~ychen/Papers/DSN16.pdf">SDNShield: Reconciliating Configurable Application Permissions for SDN App Markets	</a>, in the Proc. of IEEE/IFIP DSN, 2016 </p>
+      
+
+    <h3 id="permof"><a href="#" data-toggle="modal" title="PermOF介绍" data-target="#permofinfo"><strong>PermOF</strong></a></h3>
+    <!-- Modal -->
+<div class="modal fade" id="permofinfo" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title" id="myModalLabel">PermOF</h4>
+      </div>
+      <div class="modal-body">
+        <ul>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+  <p>　　我们通过系统地分析OF（OpenFlow）协议、OF应用和攻击类型，提出了一个细粒度的权限系统，实现了权限集合的设计和满足这个权限集合的隔离机制。<a href="http://conferences.sigcomm.org/sigcomm/2013/papers/hotsdn/p171.pdf">(more info)</a></p>
+</div>
+
+<div id="div4" class="bs-docs-section" style="display:none">
+    <div class="page-header">
+ <!--   <h1 id="past_project" style="color:BlueViolet">已完结的项目：</h1>    -->
+      <h2 id="moto">汽车电子安全</h2>
+      </div>
+      <p>　　近年来，汽车的普及率迅速提高。相关报告表明，在过去的5年中，中国汽车市场以每年24%的速度高速增长，并已于2010年取代美国成为世界最大的新车市场。报告同时指出，预计到2020年中国的汽车普及率将有望达到15%。随着普及率的上升，现代信息技术的进步正在有力地推动汽车设计的变革，使得汽车电子智能化成为一个新的发展方向。近几年，有部分厂商甚至将手机与汽车关联起来，允许用户通过手机进行开关车门，调节车内温度等远程控制操作，另外，满足MirrorLink标准的汽车同样允许用户通过车载上的物理按键或语音命令来控制手机，接听/拨打电话、播放手机音乐、或使用手机导航等等。<br></p><p>　　将手机和汽车结合使用固然能够很好地提升用户体验，然而所带来的汽车电子安全隐患却不容忽视。手机作为智能汽车系统的一部分，一旦被攻击，就有可能沦为黑客攻击智能汽车系统的工具或跳板，从而导致严重后果。不仅是安全问题，事实上现有的提供汽车手机互联功能的相关系统都存在不同程度的缺陷和不足，因此，本项目的主要目标是提出一个安全可靠，允许双向控制的车载手机互联系统框架，用以解决手机与汽车互联过程中可能存在的问题。通过对现有的认证方式进行改进以及对用户等级以及汽车系统资源进行严格划分，并对现有MirrorLink框架标准进行扩展，从而达到提高系统安全性，易用性的目的。</p>
+</div>
+<div id="div5" class="bs-docs-section" style="display:none;">
+    <div class="page-header">
+    	<h2 id="mobile_secure">智能手机与移动安全</h2>
+      </div>
+      <p>　　如今移动设备越来越受欢迎，与个人电脑相比移动设备的年销售量遥遥领先。但是与此同时，移动设备由于平台多样性以及数据存储带来的隐私与安全问题值得人们关注。<br></p>
+
+      <p>　　随着智能手机应用市场中的应用日益增加，应用的安全性检查成了一件比较困难的事。AppsPlayground能够自动化地动态分析Android应用。它拥有多组件检测以及动态探测技术，能够有效地检测应用中的隐私泄露情况与恶意功能执行情况。<br></p>
+      <p>　　Android手机上恶意软件的威胁已变成一件令人担忧的事。我们评测已有的抵御恶意应用的技术并提出下一代应对恶意应用的安全方法：评估了Android系统上最新的商业反恶意应用软件，分析它们如何应对各种常见迷惑技术。最终，提出了一个包含不同转换技术的系统框架——DroidChameleon。最后的分析结果显示，10款热门商业反恶意应用软件中，没有一款可以抵御常见的恶意软件转换技术。而且，逃避这些商业反恶意应用软件检测的转换工具也十分容易制作。<br></p>
+      <p>　　智能手机应用商店（尤其是Android商店）的开放性，使得三方应用涉及的隐私和安全问题越来越明显。与大多数手机应用商店一样，Google Play提供着全面周到的服务：用户可以直接获取关于某个应用的自然语言描述，这些描述可以让人直观地感受到该应用所包含的与安全有关的信息。Google Play 同时也展示了应用程序请求访问手机中与隐私安全有关API相对应的权限，用户可以使用这样的一个列表来评估使用这些应用程序的风险。为了更好地使用户信服，应用程序的描述必须真实地反映它所请求的权限，我们将其称为应用描述与权限的保真度。AutoCog采用自然语言处理中最先进的技术和我们自己的以学习为基础的算法使描述与权限相关联。在我们的测评中，AutoCog不管是在性能上还是在普遍概括能力上都远胜于其他相关工作。<br></p>
+      <p>　　采集智能手机用户持机姿势数据，通过数据处理以及Machine Learning算法计算，利用得出的标准值判断当前用户是否是真正的机主。经过测试，软件运行结果良好，能够极高概率识别机主及可疑用户。点击下载应用：<a href="./SensorDemo-release.apk">SensorDemo-release.apk</a>，详细介绍请：<a href="./riskcog.html">点击</a>。
+<br></p>      
+     <div class="page-header" >
+      <h2>团队组成</h2>
+      </div>
+      
+      <h4>Vaibhav Rastogi<br>陈焰<br>邵瑞<br>屈正阳<br>朱添田<br>郭冠宇<br>邵正悦</h4>
+      
+      <div class="page-header" >
+      <h2>合作伙伴</h2>
+      </div>
+      
+      <h4><a href="http://www.enck.org/">William Enck</a>, North Carolina State University<br /><a href="http://www.csc.ncsu.edu/faculty/jiang/">Xuxian Jiang</a>, North Carolina State University<br />Shihong Zou, Beijing University of Post and Telecommunications</h4>
+      
+      <div class="page-header" >
+        <h2>发表作品</h2>
+      </div>
+      
+      <p>1. Zhengyang Qu, Vaibhav Rastogi, Xinyi Zhang, Yan Chen, Tiantian Zhu and Zhong Chen. <a href="http://www.cs.northwestern.edu/~ychen/Papers/CCS14.pdf">AutoCog: Measuring the Description-to-permission Fidelity in Android Applications</a>, in the Proc. of ACM CCS, 2014 </p>
+      <p>2. Vaibhav Rastogi, Yan Chen, and Xuxian Jiang. <a href="http://list.cs.northwestern.edu/mobile/droidchameleon_tifs.pdf">Catch Me if You Can: Evaluating Android Anti-malware against Transformation Attacks</a>, in IEEE Transactions on Information Forensics and Security (TIFS), Vol. 9, No. 1, pp.99-108, 2014.</p>
+      <p>3. Vaibhav Rastogi, Yan Chen, and Xuxian Jiang. <a href="http://list.cs.northwestern.edu/mobile/droidchameleon_asiaccs.pdf">DroidChameleon: Evaluating Android Anti-malware against Transformation Attacks</a>, in the Proc. of Eighth ACM Symposium on Information, Computer and Communications Security (ASIACCS), 2013.</p>
+      <p>4. Vaibhav Rastogi, Yan Chen, and William Enck. <a href="http://cs.northwestern.edu/~ychen/Papers/AppsPlayground.pdf">AppsPlayground: Automatic Security Analysis of Smartphone Applications</a>, in the Proc. of Third ACM Conference on Data and Application Security and Privacy (CODASPY), 2013. </p>
+      <p>5. Vaibhav Rastogi, Yan Chen, and William Enck. <a href="http://www.cs.northwestern.edu/~ychen/Papers/ndss16.pdf">Are These Ads Safe: Detecting Hidden Attacks through the Mobile App-Web Interfaces</a>, 
+in the Proc. of <i>the Network and Distributed System Security Symposium (NDSS)</i>, 2016.</p>
+	<p>6. Zhengyang Qu, Guanyu Guo, Zhengyue Shao, Vaibhav Rastogi, Yan Chen, Hao Chen and Wangjun Hong. <a href="http://www.cs.northwestern.edu/~ychen/Papers/securecomm16.pdf">AppShield: Enabling Multi-entity Access Control Cross Platforms for Mobile App Management</a>, in the Proc. of Securecomm 2016  </p>
+      
+      <div class="page-header" >
+        <h2>技术报告</h2>
+      </div>
+      <p>1. Vaibhav Rastogi, Yan Chen, and Xuxian Jiang. <a href="http://list.cs.northwestern.edu/mobile/droidchameleon_nu_eecs_13_01.pdf">DroidChameleon: Evaluating Android Anti-malware against Transformation Attacks</a>, technical report NU-EECS-13-01, Electrical Engineering and Computer Science, Northwestern University, 2013.</p>
+      
+      <div class="page-header" >
+        <h2>发行的工具</h2>
+      </div>
+      
+      <p>AppsPlayground可以通过下面的链接获得<a href="http://dod.cs.northwestern.edu/plg">http://dod.cs.northwestern.edu/plg</a>。在此你可以下载Android源码补丁和运行AppsPlayground的说明。</p>
+      <p>为了防止恶意软件的产生与扩散，DroidChameleon不提供下载链接。</p>
+      <p>我们已在Google Play上发布了两款与我们项目有关的应用 <a href="https://play.google.com/store/apps/details?id=com.version1.autocog">AutoCog</a>和<a href="https://play.google.com/store/apps/details?id=com.webshield.privacyshield">PrivacyShield</a>。</p>
+</div>
+    <!-- Footer
+    ================================================== -->
+    <footer class="bs-footer" role="contentinfo">
+      <div class="container">
+        
+
+        <ul class="footer-links">
+          <li>Copyright © LIST 2014</li>
+          <li class="muted">&middot;</li>
+          <li><a href="http://www.miitbeian.gov.cn/">浙ICP备05074421号</a></li>
+          <li class="muted">&middot;</li>
+          <li>地址：中国·杭州</li>
+          <li class="muted">&middot;</li>
+          <li>邮编：310027</li>
+        </ul>
+      </div>
+    </footer>
+
+    <!-- JS and analytics only. -->
+    <!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="http://cdn.bootcss.com/jquery/1.10.2/jquery.min.js"></script>
+
+<!-- Bootstrap core JS file
+  注意：此文件跟随官网最新版本更新，随时会有改变。建议使用下面v3.0.3版本的CDN链接！
+ -->
+<script src="./dist/js/bootstrap.js"></script>
+
+<!-- Hi，如果你要在自己的网站上引入bootstrap JS文件的话，请使用当前最新版本v3.0.3的CDN链接，页面加载速度会更快！
+<script src="http://cdn.bootcss.com/twitter-bootstrap/3.0.3/js/bootstrap.min.js"></script>
+-->
+
+<script src="http://cdn.bootcss.com/holder/2.0/holder.min.js"></script>
+<script src="http://cdn.bootcss.com/highlight.js/7.3/highlight.min.js"></script>
+<script >hljs.initHighlightingOnLoad();</script>
+
+<script src="./docs-assets/js/application.js"></script>
+
+
+
+<!-- Analytics
+================================================== -->
+    <script type="text/javascript">
+    var _bdhmProtocol = (("https:" == document.location.protocol) ? " https://" : " http://");
+    document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3F3d8e7fc0de8a2a75f2ca3bfe128e6391' type='text/javascript'%3E%3C/script%3E"));
+    </script>
+
+
+  </body>
+</html>
+

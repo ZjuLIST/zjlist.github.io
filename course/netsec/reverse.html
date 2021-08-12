@@ -1,0 +1,196 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html><head>
+    <title>Network Penetration and Security — EECS 354 </title>
+    <meta http-equiv="Content-type" content="text/html; charset=UTF-8">
+    <link href="style/global.css" rel="stylesheet" type="text/css">
+    
+<link href="style/wiki.css" rel="stylesheet" type="text/css">
+
+</head>
+<body>
+
+  <div id="header">
+    <h1>Network Penetration and Security</h1>
+    <h2>Northwestern EECS, Fall Quarter 2014</h2>
+  </div>
+  <ul id="navigation">
+    
+    <li><a href="http://hamsa.cs.northwestern.edu/">Home</a></li>
+    <li><a href="http://hamsa.cs.northwestern.edu/schedule/">Schedule</a></li>
+    <li><a href="http://hamsa.cs.northwestern.edu/readings/">Readings</a></li>
+    <li><a href="http://hamsa.cs.northwestern.edu/projects/">Projects</a></li>
+
+    
+    
+    <li class="right"><a href="http://hamsa.cs.northwestern.edu/login/">Login</a></li>
+    
+    <li class="right"><a href="http://groups.google.com/group/nuctf">Newsgroup</a></li>
+  </ul>
+  
+  <div id="content">
+    
+  
+  <h1>逆向工程</h1>
+
+<h2>简介</h2>
+<p>在大多数逆向工程的情景中，你有一个或一组你想要深入理解的文件。但是，在这些情况下你通常没有可用的源代码。相反，你只有经过编译之后的程序，这些程序可能包含一些额外的混淆，使你无法正确地阅读它。在理解如何逆向已编译的程序之前, 你必须对编译器的工作原理有更高层次的理解：</p>
+<p>编译器将高级语言编写的程序，转换到人类不可读的语言。C程序经常编译为可执行的机器代码，而其他高级语言，如 Java 经常被编译成字节码，由解释器 (在本例中是JVM) 执行。</p>
+<p>在某些情况下，编译器已逆向操作码和序列化，像编译过程中所采取的步骤。相当准确地反编译器为一些受欢迎的字节码格式。</p>
+<pre><code>* Java .class - JD
+* Python .pyc - Uncompyle2, decompyle, unpyc
+</code></pre><p>反编译为机器代码的效果一般较差，因为在编译成机器代码过程大量信息已经被丢失了。正因为如此，反汇编和调试器通常用于
+分析这些类型的程序。IDA Pro是一个非常优秀的工具，但也有一些免费的工具，比如 
+OllyDbg。然而，我们将会用最简单并且熟悉的调试器：gdb。</p>
+
+<h2>第一步</h2>
+<p>下载<a href="http://hamsa.cs.northwestern.edu/media/handouts/unknown_binary"> 提供的二进制文件</a>，跟着下面的步骤逆向获取秘密信息。
+</p>
+<p>有几个轻量级的工具可以给你提供你正在分析的文件的信息。我们将主要使用下面的工具:<code>file</code>, <code>strings</code>, <code>strace</code>, <code>objdump</code>, and <code>gdb</code>. 
+</p>
+<p>第一个工具，<code>file</code>，将告诉你文件的类型。它主要通过查看文件的<code>magic number</code>来实现这一项功能。不同的文件格式有不同的magic numbers，并且这些信息都存储在文件内部的数据区。</p>
+<pre><code>    ajk138@hamsa:~/reversing$ file unknown_binary
+unknown_binary: ELF 32-bit LSB executable, Intel 80386, version 1 (SYSV), dynamically linked (uses shared libs), for GNU/Linux 2.6.24, BuildID[sha1]=0x8cf8e498027e2f83f8e8191aa6c32262805dc007, not stripped
+</code></pre><p>基于这些我们可以知道: 此文件是ELF二进制文件。ELF在本质上是 x86 体系结构的标准二进制格式。它是为 32位LSB x86 的 Linux 机器建立的。它使用了一些共享的库函数。最后，符号表并不是剥离的 (<code>man strip</code>)，这在之后的过程中会有所帮助。
+</p>
+<p><code>string</code>工具只是返回在一个文件内的所有可打印字符串。这通常包括错误消息和可能函数名。
+</p>
+<pre><code>ajk138@hamsa:~/reversing$ strings unknown_binary
+/user
+You must specify an account name
+send error
+admin
+Welcome, admin!
+Enter an admin command:
+Welcome, admin! Enter a command:
+Welcome, %s! Enter a command:
+/ping
+You must specify an account to ping
+Pinged: %s
+/super_ddos
+You must specify a site to dos
+Low Orbit Ion Cannon Activated
+/print_secret_admin_info
+: invalid command
+Usage: ./lab PORT
+</code></pre><p>编译器生成的字符串和函数名称在上面的例子中都有体现(所以输出将会有很多额外的信息)。这些都是二进制文件中的原始字符串。请注意有一个仅限于管理员用户的命令，它会打印我们想要的秘密信息。</p>
+<p>首先，运行该文件，这会给你一些基本的使用信息。唯一需要的参数是一个端口号。<code>Strace</code> 工具会显示所有的系统调用以及调用参数和返回值。所有的文件系统和网络都使用系统调用交互。<code>ltrace</code> 查看链接的库调用的等效工具。Strace 的第一行总是会显示对 execve 的调用。为什么呢?因为那是用来产生一个子进程的系统调用，是所有的程序开始的地方。
+</p>
+<pre><code>ajk138@hamsa:~/reversing$ chmod +x unknown_binary
+ajk138@hamsa:~/reversing$ strace ./unknown_binary 4567
+execve("./unknown_binary", ["./unknown_binary", "4567"], [/* 17 vars */]) = 0
+&lt;SNIPPED&gt;
+socket(PF_NETLINK, SOCK_RAW, 0)                 = 3
+bind(3, {sa_family=AF_NETLINK, pid=0, groups=00000000}, 12) = 0
+getsockname(3, {sa_family=AF_NETLINK, pid=20992, groups=00000000}, [12]) = 0
+time(NULL)                                                            = 1389673000
+sendto(3, "\24\0\0\0\26\0\1\3(\272\324R\0\0\0\0\0\0\0\0", 20, 0, {sa_family=AF_NETLINK, pid=0, groups=00000000}, 12) = 20
+recvmsg(3, {msg_name(12)={sa_family=AF_NETLINK, pid=0, groups=00000000}, msg_iov(1)=[{"0\0\0\0\24\0\2\0(\272\324R\0R\0\0\2\10\200\376\1\0\0\0\10\0\1\0\177\0\0\1"..., 4096}], msg_controllen=0, msg_flags=0}, 0) = 228
+recvmsg(3, {msg_name(12)={sa_family=AF_NETLINK, pid=0, groups=00000000}, msg_iov(1)=[{"@\0\0\0\24\0\2\0(\272\324R\0R\0\0\n\200\200\376\1\0\0\0\24\0\1\0\0\0\0\0"..., 4096}], msg_controllen=0, msg_flags=0}, 0) = 256
+recvmsg(3, {msg_name(12)={sa_family=AF_NETLINK, pid=0, groups=00000000}, msg_iov(1)=[{"\24\0\0\0\3\0\2\0(\272\324R\0R\0\0\0\0\0\0\1\0\0\0\24\0\1\0\0\0\0\0"..., 4096}], msg_controllen=0, msg_flags=0}, 0) = 20
+close(3)                                                                = 0
+socket(PF_INET6, SOCK_DGRAM, IPPROTO_IP) = 3
+connect(3, {sa_family=AF_INET6, sin6_port=htons(4567), inet_pton(AF_INET6, "::", &amp;sin6_addr), sin6_flowinfo=0, sin6_scope_id=0}, 28) = 0
+getsockname(3, {sa_family=AF_INET6, sin6_port=htons(53015), inet_pton(AF_INET6, "::1", &amp;sin6_addr), sin6_flowinfo=0, sin6_scope_id=0}, [28]) = 0
+connect(3, {sa_family=AF_UNSPEC, sa_data="\0\0\0\0\0\0\0\0\0\0\0\0\0\0"}, 16) = 0
+connect(3, {sa_family=AF_INET, sin_port=htons(4567), sin_addr=inet_addr("0.0.0.0")}, 16) = 0
+getsockname(3, {sa_family=AF_INET6, sin6_port=htons(56404), inet_pton(AF_INET6, "::ffff:127.0.0.1", &amp;sin6_addr), sin6_flowinfo=0, sin6_scope_id=0}, [28]) = 0
+close(3)                                                                = 0
+socket(PF_INET, SOCK_STREAM, IPPROTO_TCP) = 3
+bind(3, {sa_family=AF_INET, sin_port=htons(4567), sin_addr=inet_addr("0.0.0.0")}, 16) = 0
+listen(3, 5)                                                        = 0
+accept(3,
+</code></pre><p>它等待指定端口上的连接。使用 <code>nc</code> 连接到它，并尝试使用一些从 <code>string</code> 中识别的命令。
+</p>
+<p>在这这个时候，你对文件已经很了解了。你已经知道文件的类型，预存的字符串，监听套接字，其他文件系统或网络的活动。你可以通过基于 <code>strings</code> 的输出运行一些命令来检查这些命令。
+</p>
+<pre><code>ajk138@hamsa:~/reversing$ nc localhost 4567
+/test
+/test: invalid command
+/user
+You must specify an account name
+/ping
+You must specify an account to ping
+/ping /user
+Pinged: /user
+/user /ping
+Welcome, /ping! Enter a command:
+/user john
+Welcome, john! Enter a command:
+/ping john
+Pinged: john
+/user admin
+Welcome, admin! Enter a command:
+/print_secret_admin_info
+You must logged in as an admin to run this command.
+</code></pre><p>继续努力。由于该文件是可执行文件的格式, 一步是反汇编分析。</p>
+
+<h2>反汇编分析</h2>
+<p>一个<code>反汇编器</code> 可以可靠地将机器码转化为程序汇编码。<code>Objdump</code> 和 <code>gdb</code> 都有反汇编器以及大量的反汇编分析的其他选项。
+</p>
+<p><code>objdump</code> 可以显示程序表头、 符号表和可执行文件的完整汇编代码。程序表头会有一些有趣的信息，如内存映射，可执行部分的内存和执行的起始地址。你可以使用 <code>objdump-x</code>查看。下面是通过 <code>objdump-t</code> 得到的符号表:
+</p>
+<pre><code>ajk138@hamsa:~/reversing$ objdump -t unknown_binary | grep .text
+08048670 l        d    .text    00000000                            .text
+080486a0 l         F .text    00000000                            __do_global_dtors_aux
+08048700 l         F .text    00000000                            frame_dummy
+080494c0 l         F .text    00000000                            __do_global_ctors_aux
+080494b0 g         F .text    00000002                            __libc_csu_fini
+080494b2 g         F .text    00000000                            .hidden __i686.get_pc_thunk.bx
+0804876f g         F .text    00000b14                            do_command
+08048724 g         F .text    0000004b                            random_token
+08049440 g         F .text    00000061                            __libc_csu_init
+08048670 g         F .text    00000000                            _start
+08049283 g         F .text    000001b2                            main
+</code></pre><p>你可以猜测这些内容，在文本中有三个重要函数: main、 do_command 和 random_token。</p>
+<p><code>gdb</code>是一个命令行调试器，这里不会再描述它的用途。如果你不熟悉它的话可以查看文档。</p>
+<p>如果你预先尝试过的所有命令，您可能会注意到用户身份登录可以简单地使用用 /user<username>。然而，我们需要以管理员身份登录以获取一些秘密信息。通过一些试验，你可以找到以下内容:</username></p>
+<pre><code>$ gdb unknown_binary
+(gdb) b main
+Breakpoint 1 at 0x8049287
+(gdb) b random_token
+Breakpoint 2 at 0x8048728
+(gdb) b do_command
+Breakpoint 3 at 0x8048775
+(gdb) run &lt;YOUR PORT&gt;
+
+(in another terminal)
+$ nc hamsa.cs.northwestern.edu &lt;YOUR PORT&gt;
+$ /user user
+$ /user admin
+
+(gdb terminal)
+(gdb) run 4567
+The program being debugged has been started already.
+Start it from the beginning? (y or n) y
+Starting program: /home/ajk138/reversing/unknown_binary 4567
+
+Breakpoint 1, 0x08049287 in main ()
+(gdb) c
+Continuing.
+
+Breakpoint 3, 0x08048775 in do_command ()
+(gdb) c
+Continuing.
+
+Breakpoint 3, 0x08048775 in do_command ()
+(gdb) c
+Continuing.
+
+Breakpoint 2, 0x08048728 in random_token ()
+(gdb) c
+Continuing.
+</code></pre><p>只有命令"/user admin"会命中函数 <code>random_token</code>。总结一下我们关
+于 
+do_command的信息，如果要登录，你必须传递字符串"/user"作为第一个关键字，只会命中random_token函数，你必须传递字符
+串"admin"作为第二个关键字。再看一看do_command的反汇编代码，你可以看到第三个调用是<code>strtok</code> 函数，并且是与random_token 的输出比较。这意味着你必须通过特定的第三个关键字才能以管理员的身份登录
+</p>
+
+<h2>课堂任务</h2>
+<p>逆向 <code>random_token</code>函数，找到正确的第三个令牌，然后以管理员的身份登录。通过发送命令 /print_secret_admin_info。
+</p>来检查你是否已经以管理员登录。
+
+  </div>
+
+
+
+</body></html>

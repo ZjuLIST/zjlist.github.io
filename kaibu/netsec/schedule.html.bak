@@ -1,0 +1,100 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+	<meta name="description" content="Your description goes here" />
+	<meta name="keywords" content="your,keywords,goes,here" />
+	<meta name="author" content="Your Name" />
+	<link href='http://fonts.googleapis.com/css?family=Economica' rel='stylesheet' type='text/css' />
+	<link rel="stylesheet" type="text/css" href="freestyle.css" title="The Grid" media="all" />
+	<title>Network Security</title>
+</head>
+
+<body class="wider orange">
+<div id="layout">
+	
+	
+		<div class="row">
+		<div class="col c12 alignright navmenu">
+			<p>
+				<a href="index.html" class="current"><font size=5pt>Overview</font></a>
+				&nbsp&nbsp&nbsp&nbsp
+				<a href="schedule.html"><u><strong><font size=5pt>Schedule</font></strong></u></a>
+				&nbsp&nbsp&nbsp&nbsp
+				<a href="assignment.html"><font size=5pt>Assignment</font></a>
+				&nbsp&nbsp&nbsp&nbsp
+				<a href="research.html"><font size=5pt>Project</font></a>
+			</p>
+		</div>
+	</div>
+	
+	<h1>Network Security Theory and Practice</h1>
+	<font size=5pt>College of Computer Science and Technology, Zhejiang University, Fall 2018
+	<br>Monday 15:55 – 17:30, Tuesday 09:50 - 11:25, Room 7-602
+	<br>Tuesday 08:00 - 09:35, Room CW-503
+	</font>
+	<p></p>
+	
+			<h3>Schedule</h3>
+	
+<table>
+		<tr>
+			<td>Week 01&nbsp&nbsp<br>&nbsp<br>&nbsp<br>&nbsp<br>&nbsp</td>
+			<td>2018.11.19/2018.11.20&nbsp&nbsp<br><br>&nbsp<br>&nbsp<br>&nbsp</td>
+			<td>Lecture 01: Course Introduction<br><br>Lecture 02: Cryptography<br>&nbsp<br>&nbsp</td>
+			<td>&nbsp|&nbsp<a href="https://www.youtube.com/watch?v=eZNzMKS7zjo" target=_blank>#The Security Mindset</a> by Bruce Schneier<br>&nbsp|&nbsp<a href="https://www.youtube.com/watch?v=AuYNXgO_f3Y" target=_blank>#The Internet: Cybersecurity & Crime</a> by Parisa Tabriz and Jenny Martin<br>&nbsp|&nbsp<a href="https://www.youtube.com/watch?v=ZghMPWGXexs" target=_blank>#The Internet: Encryption & Public Keys</a> by Mia Epner<br>&nbsp|&nbsp<a href="https://dl.acm.org/citation.cfm?id=3214303" target=_blank>#A Survey on Homomorphic Encryption Schemes: Theory and Implementation</a> by A. Acar <em>et al.</em><br>&nbsp|&nbspDue: Project Grouping</td>
+		</tr>
+		<tr>
+			<td>Week 02&nbsp&nbsp<br>&nbsp</td>
+			<td>2018.11.26/2018.11.27&nbsp&nbsp<br>&nbsp</td>
+			<td>Lecture 03: Cryptanalysis<br>&nbsp</td>
+			<td>&nbsp|&nbspDue: Proposal Presentation<br>&nbsp|&nbsp</td>
+		</tr>
+		<tr>
+			<td>Week 03&nbsp&nbsp</td>
+			<td>2018.12.03/2018.12.04&nbsp&nbsp</td>
+			<td>Lecture 04: Blockchain</td>
+			<td>&nbsp|&nbsp<a href="https://www.bilibili.com/video/av20998852" target=_blank>#The Rise and Rise of Bitcoin</a></td>
+		</tr>
+		<tr>
+			<td>Week 04&nbsp&nbsp</td>
+			<td>2018.12.10/2018.12.11&nbsp&nbsp</td>
+			<td>Lecture 05: SSL, TLS, HTTPS</td>
+			<td>&nbsp|&nbsp</td>
+		</tr>
+		<tr>
+			<td>Week 05&nbsp&nbsp</td>
+			<td>2018.12.17/2018.12.18&nbsp&nbsp</td>
+			<td>Lecture 06: Secure Routing and Forwarding</td>
+			<td>&nbsp|&nbsp<a href="https://www.youtube.com/watch?v=AYdF7b3nMto" target=_blank>#The Internet: Packets, Routing & Reliability</a> by Lynn Root and Vint Cerf</td>
+		</tr>
+		<tr>
+			<td>Week 06&nbsp&nbsp</td>
+			<td>2018.12.24/2018.12.25&nbsp&nbsp</td>
+			<td>Lecture 07: Anonymous Communication</td>
+			<td>&nbsp|&nbsp</td>
+		</tr>
+		<tr>
+			<td>Week 07&nbsp&nbsp</td>
+			<td>2019.01.07/2019.01.08&nbsp&nbsp</td>
+			<td>Lecture 08: Wi-Fi Security</td>
+			<td>&nbsp|&nbsp</td>
+		</tr>
+		<tr>
+			<td>Week 08&nbsp&nbsp<br>&nbsp<br>&nbsp</td>
+			<td>2019.01.14/2019.01.15&nbsp&nbsp<br>&nbsp<br>&nbsp</td>
+			<td>Lecture 09: Zero-Knowledge Proof<br>&nbsp<br>&nbsp</td>
+			<td>&nbsp|&nbspDue: Wrapup Presentation<br>&nbsp|&nbspDue: Demo<br>&nbsp|&nbspDue: Report</td>
+		</tr>
+	</table>
+
+	
+	
+	<div id="footer" class="row">
+		<div class="col c12 alignright">
+			<a href="http://andreasviklund.com/templates/freestyle/">Template design</a> by <a href="http://andreasviklund.com/">Andreas Viklund</a>
+		</div>
+	</div>
+</div>
+</body>
+</html>

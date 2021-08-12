@@ -1,0 +1,388 @@
+
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <head>
+    <!-- Meta, title, CSS, favicons, etc. -->
+    <meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="浙江大学互联网安全实验室 - 网络安全、智能设备安全、漏洞预警分析、下一代入侵检测及防御取证等。">
+<meta name="author" content="Jarvis W.">
+
+<title>
+  
+    riskcog &middot; 浙江大学互联网安全实验室
+  
+</title>
+
+<!-- Bootstrap core CSS 
+  注意：此文件跟随官网最新版本更新，随时会有改变。建议使用下面v3.0.3版本的CDN链接！
+ -->
+<link href="./dist/css/bootstrap.min.css" rel="stylesheet">
+
+<!-- Hi，如果你要在自己的网站上引入bootstrap样式文件的话，请使用当前最新版本v3.0.3的CDN链接，页面加载速度会更快！
+<link rel="stylesheet" href="http://cdn.bootcss.com/twitter-bootstrap/3.0.3/css/bootstrap.min.css">
+-->
+
+<!-- Documentation extras -->
+<link href="./docs-assets/css/docs.css" rel="stylesheet">
+<link href="http://cdn.bootcss.com/highlight.js/7.3/styles/github.min.css" rel="stylesheet">
+<style>
+body{font-family:"ff-tisa-web-pro-1","ff-tisa-web-pro-2","Lucida Grande","Helvetica Neue",Helvetica,Arial,"Hiragino Sans GB","Hiragino Sans GB W3","WenQuanYi Micro Hei",sans-serif;}
+h1, .h1, h2, .h2, h3, .h3, h4, .h4, .lead {font-family:"ff-tisa-web-pro-1","ff-tisa-web-pro-2","Lucida Grande","Helvetica Neue",Helvetica,Arial,"Hiragino Sans GB","Hiragino Sans GB W3","Microsoft YaHei UI","Microsoft YaHei","WenQuanYi Micro Hei",sans-serif;}
+pre code { background: transparent; }
+@media (min-width: 768px) {
+    .bs-docs-home .bs-social, 
+    .bs-docs-home .bs-masthead-links {
+      margin-left: 0;
+    }
+}
+
+.bs-docs-section p {
+	line-height: 2;
+}
+
+.bs-docs-section p.lead {
+	line-height: 1.4;
+}
+
+
+</style>
+
+<!--[if lt IE 9]><script src="../docs-assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
+
+<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+<!--[if lt IE 9]>
+  <script src="http://cdn.bootcss.com/html5shiv/3.7.0/html5shiv.min.js"></script>
+  <script src="http://cdn.bootcss.com/respond.js/1.3.0/respond.min.js"></script>
+<![endif]-->
+
+<!-- Favicons -->
+<link rel="apple-touch-icon-precomposed" sizes="144x144" href="./docs-assets/ico/logo.jpg">
+                               <link rel="shortcut icon" href="./docs-assets/ico/favicon.png">
+
+
+
+  </head>
+  <body>
+    <a class="sr-only" href="#content">Skip to main content</a>
+
+    <!-- Docs master nav -->
+    <header class="navbar navbar-inverse navbar-fixed-top bs-docs-nav" role="banner">
+  <div class="container">
+    <div class="navbar-header">
+      <button class="navbar-toggle" type="button" data-toggle="collapse" data-target=".bs-navbar-collapse">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a href="./" class="navbar-brand">浙江大学互联网安全实验室</a>
+    </div>
+    <nav class="collapse navbar-collapse bs-navbar-collapse" role="navigation">
+      <ul class="nav navbar-nav">
+        <li>
+          <a href="./index.html">实验室简介</a>
+        </li>
+        <li>
+          <a href="./human.html">实验室成员</a>
+        </li>
+        <li class="active">
+          <a href="./projects.html">项目小组</a>
+        </li>
+	<li>
+          <a href="./Internet.html">教授课程</a>
+        </li>
+        <li>
+          <a href="./achievements.html">研究成果</a>
+        </li>
+        <li>
+          <a href="./address.html">地址</a>
+        </li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+          <a href="mailto:ychen@northwestern.edu">联系我们</a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+
+    <!-- Docs page layout -->
+    <div class="bs-header" id="content">
+      <div class="container">
+        <h1>RiskCog</h1>
+        <p>Application Intrduction</p>
+        
+      </div>
+    </div>
+
+    <!-- Callout for the old docs link -->
+    
+
+    <div class="container bs-docs-container">
+      <div class="row">
+        <div class="col-md-3">
+          <div class="bs-sidebar hidden-print" role="complementary">
+            <ul class="nav bs-sidenav">
+              
+<li>
+  <a href = "#overview"> 1. Overview </a>
+</li>
+<li>
+  <a href = "#installation"> 2. Installation </a>
+</li>
+<li>
+  <a href = "#phases"> 3. Phases Introduction</a>
+</li>
+<li>
+  <a href = "#password"> 4. Password Setting </a>
+</li>
+<li>
+  <a href = "#interface"> 5. Main Interface</a>
+</li>
+<li>
+  <a href = "#training"> 6. Training Phase </a>
+</li>
+<li>
+  <a href = "#optimizing"> 7. Optimizing Phase </a>
+</li>
+<li>
+  <a href = "#detecting"> 8. Detecting Phase </a>
+</li>
+
+                                  
+            </ul>
+          </div>
+        </div>
+        <div class="col-md-9" role="main">
+          
+
+
+  <!-- Getting started
+  ================================================== -->
+  <div class="bs-docs-section">
+    <div class="page-header">
+      <h1 id="overview">1. Overview</h1>
+    </div>
+<p>
+RiskCog is an Android application that enforces user authentication with the data collected from motion sensors (acceleration sensor, gyroscope sensor, and gravity sensor). Our app is based on a learning-based approach and train the model to depict the authorized device owner by the manner of handling the device. After testing, this application works well that can determining the authorized users from “suspicious users” in high accuracy. Our system is deployed in a client-server model. The client app is packaged as a APK file in our submission, and the server, including the learning framework, user data management is deployed on a Azure Virtual Machine.
+Right now our application supports all Android phones that the system is Android 4.0 and above version, meanwhile the phones should also provide complete sensors for collecting data, otherwise the application will give a prompt. 
+To sum up, the requirements  of our application’s deployment are:
+</p>
+<p>●	Internet connection  </p>
+<p>●	Android smartphone with OS version 4.0 and touch screen capability  </p>
+<p>●	Android smartphone with acceleration sensor, gyroscope sensor, and gravity sensor</p>
+<p>Download Link：<a href="./SensorDemo-release.apk">SensorDemo-release.apk</a> </p>
+<!-- File structure
+  ================================================== -->
+  <div class="bs-docs-section">
+</p>
+<div class="page-header">
+  <h1 id="installation">2. Installation</h1>
+  </div>
+  <p>
+  Use this command line for installation: “adb install path-to-apk”. You need to install the toolbox Android Debug Bridge to deploy the app on device [https://developer.android.com/studio/command-line/adb.html]
+	During the installation, if the phone is currently not enabled to install the unknown source software, please go to settings to enable this option. (Fig 1)
+ <p><img src="./docs-assets/images/riskcog/install.jpg" ></p>
+Fig.1  Enable installation from unknown source
+  </p>
+  
+  
+  <div class="bs-docs-section">
+    <div class="page-header">
+      <h1 id="phases">3. Phases Introduction</h1>
+  </div>
+  <p>
+  This application mainly contains three different phases: Training Phase, Optimizing Phase and Detecting Phase.
+	The training phase mainly includes collecting data from motion sensors and uploading the data to the server on the Azure cloud platform for model training. This model will be checked so as to decide “Suspicious Users” and authorized users, and enforce user authentication. During this period, users can change password (Check details in 4.b), turn on/off the background training/optimizing/detecting service (Check details in 5.c), and check user guide. Users can also view training progress from the progress bars (Check details in 6.b).
+	The optimizing phase starts after training phase, after 100 files collected in sitting section and 100 files collected in walking section. We should note that we have two separate models for user’s motion states (sitting and walking). During this period, the server will continuously collecting data from the phone and optimizing the model (Check details in 7). And it will move on to detecting phase.
+	The detecting phase will start after optimizing phase, in this period if the collected data has a slightly difference with the trained model, the application will generate a dialog to warn the user of a “Suspicious User” usage, and user has to input their password to continue the application they are using (Check details in 8.a). Meanwhile, if there are five times of false alarms (determining authorized user as “Suspicious User”), the application will switch back to optimizing phase to optimize the model.(Check details in 8.b)
+
+  </p>
+  
+  <div class="bs-docs-section">
+  <div class="page-header">
+      <h1 id="password">4. Password Setting</h1>
+  </div>
+  <p>
+    <strong>a.	Initial Password   Setting</strong>
+  <p>After entering the application, set the initial password in the interface shown below in fig 2, this is the detecting phase password and will be the only password to unlock the account after a suspicious user is detected, Please keep it at a safe place. This password is also editable in the main interface. 
+  <p><img src="./docs-assets/images/riskcog/password1.jpg" ></p>
+  <p>Fig. 2. Setting the password
+  </p>
+  </p>
+  <p>&nbsp; </p>
+  <p><strong>b.	Change Password
+  </strong>
+  <p>Click on the “setting” icon in the main interface (fig 3, fig 4) to change password, type in your old password, new password, and repeat new password accordingly to finish the changing password process. 
+    
+  <p><img src="./docs-assets/images/riskcog/password2.jpg" ></p>
+    Fig. 3. Button to change password     
+    <p><img src="./docs-assets/images/riskcog/password3.jpg" ></p>
+    Fig. 4. Change the password </p>  
+    
+  <div class="bs-docs-section">
+  <div class="page-header">
+    <h1 id="interface">5. Main Interface</h1>
+  </div>
+  <p>
+  <strong>a.	Instruction of Main Interface</strong> </p>
+  <p>The main interface mainly includes following parts (fig. 5)： </p>
+  <p>1.  Current State;
+  </p>
+  <p>2. Check User Guide;
+  </p>
+  <p>3. Password Changing;
+  </p>
+  <p>4. Applications in Protecting;
+  </p>
+  <p>5. Training Progress;
+  </p>
+  <p>6. Start/Stop button;
+  </p>
+  <p>7. Mode Button.
+    
+  </p>
+  <p>
+  <p><img src="./docs-assets/images/riskcog/interface1.jpg" ></p>
+  Fig. 5. Main user interface interpretation
+  </p>
+  <p>1.  Current State: This is used for displaying current state of the application, state consists of three different values for three phases, check details in 6, 7, 8.  </p>
+  <p><strong>Idle</strong> Current service is stopped by user, for details please check in 5.c  </p>
+  <p><strong>training</strong> Training phase: The model is still under training  </p>
+  <p><strong>optimizing</strong> Optimizing phase: Model exists, now optimizing it for future detecting  </p>
+  <p><strong>detecting</strong> Detecting phase: Model exists, protecting the phone </p>
+  <p>2. Check User Guide:  Click to check the user guide, check details in 5.b.
+  </p>
+  <p>3. Password Changing:  Click to change the password. check details in 4.b.
+  </p>
+  <p>4. Applications in Protecting: This indicates the applications that RiskCog is protecting, currently contains Facebook, Outlook, Gmail and YouTube. It is easily to customize any apps to protect. We include the four popular applications for the purpose of demonstration. 
+  </p>
+  <p>5. Training Progress: This is the place user can check if their model progress, 100% means model exists. check details in 6.b.
+  </p>
+  <p>6. Start/Stop button: This button is used for start/stop the service, they can be used in training phase, optimizing phase and detecting phase. check details in 5.c.
+  </p>
+  <p>7. Mode button: This is used to switch the data source of your phone, please see Fig. 7 for detail.  </p>
+  <p><strong>b. Check User Guide</strong></p>
+  <p>Click on the button in fig. 6 will open the user guide.(Fig. 7) </p>
+  <p>
+  <p><img src="./docs-assets/images/riskcog/interface2.jpg" ></p>
+  Fig. 6. Button to check user guide                         </p>
+  <p>
+  <p><img src="./docs-assets/images/riskcog/interface3.jpg" ></p>
+  Fig. 7. User guide </p>
+  <p><strong>c. Start/Stop Button    </strong></p>
+  <p>For all three phases (training, optimizing, detecting), user can always using this Start/Stop button to resume or pause the service, the state will switching between “Idle” and current phase to indicates if the service is started or not. (fig. 8, fig. 9).    </p>
+  <p>
+  <p><img src="./docs-assets/images/riskcog/interface4.jpg" ></p>
+  Fig. 8. Start the service </p>
+  <p>
+  <p><img src="./docs-assets/images/riskcog/interface5.jpg" ></p>
+  Fig. 9. Stop the service </p>    
+    
+<div class="bs-docs-section">
+  <div class="page-header">
+    <h1 id="training">6. Training Phase</h1>
+  </div>
+  <p>
+ <strong>a.	Details of Training Phase</strong>   
+  <p>In our initial setup, users need 100 files in sitting section and 100 files in walking section to complete the modeling progress. Thus, this phase will require users to use the protected applications(Currently Facebook, Outlook, Gmail and YouTube) in their daily usage, including states of sitting and walking. It is also important to note that the files with less than 100 points data will not be uploaded to the server to avoid a significant impact on model. And the walking section will also take a long time for training, thus if users need to accelerate the training process to verify the accuracy of the application, they can intentionally using the protected applications during walking state, which will generate the model more quick.   
+  <p><strong>b.	Instruction of Progress Bar</strong>   
+  <p>During the training period, the progress bar in fig. 10 will indicate how many data have been collected in two motion states, sitting and walking, respectively. We should note that the optimization and detecting phrases will only start after enough data are collected for both of the two motion states. 
+  <p><img src="./docs-assets/images/riskcog/train.jpg" ></p>
+Fig. 10. Training Phase
+
+  </p>
+  
+<div class="bs-docs-section">
+  <div class="page-header">
+    <h1 id="optimizing">7. Optimizing Phase</h1>
+  </div>
+  <p>
+ The optimizing phase starts slightly after the training phase (fig. 11). During this period, the model already exists based on the training files. To get a more accurate result, RiskCog will continuously collecting data from mobile sensors and optimizing the model. As the data uploaded to the server, it will starts to calculate the accuracy of the data from the existed model, once the sit_accuracy and walk_accuracy both reach 0.85 (Previous Setup) the application will move forward to detecting phase.
+Also, during the detecting period, if there are five times of false alarms (determining the actual user as “Suspicious User”), the application will switch back to optimizing phase to optimize the model in order to get a more accurate detection. For details please check 8.b.
+<p><img src="./docs-assets/images/riskcog/optimize.jpg" ></p>
+Fig. 11. Optimizing Phase
+
+  </p>
+  
+  <div class="bs-docs-section">
+  <div class="page-header">
+    <h1 id="detecting">8. Detecting Phase</h1>
+  </div>
+  <p>
+  <strong>a.	Suspicious User Warning</strong> </p>
+  <p>If the misalignment between the model and the data collected from motion sensors is detected in the detecting phase, a notification saying “Suspicious User” will pop up, and asking for the initial password (fig. 12), user verification (fig. 13), and disable verification (fig. 14).</p>
+  <p> 
+  <p><img src="./docs-assets/images/riskcog/detect1.jpg" ></p>
+  Fig. 12. Suspicious user        </p>
+  <p>
+  <p><img src="./docs-assets/images/riskcog/detect2.jpg" ></p>
+  Fig. 13. Select usage            </p>
+  <p>
+  <p><img src="./docs-assets/images/riskcog/detect3.jpg" ></p>
+  Fig. 14. Disable the detection	</p>
+  <p>User verification in fig 7.2 is for sustain training mode, the accuracy of the software will continuously improve during this process.</p>
+  <p><strong>b.	Return to Optimizing Phase</strong></p>
+  <p>If user select for five times of “self” usage in the dialog, that means the application has five times of false alarm, thus it will generate a dialog to remind the user of this situation, and will switch back to optimizing phase to optimize the model for a better accuracy. (fig. 15, fig. 16)    </p>
+  <p>
+  <p><img src="./docs-assets/images/riskcog/detect4.jpg" ></p>
+  Fig. 15 Detecting Phase    	      	      </p>
+  <p>
+  <p><img src="./docs-assets/images/riskcog/detect5.jpg" ></p>
+  Fig. 16 Reminder </p>  
+  <!-- Footer
+    ================================================== -->
+    <footer class="bs-footer" role="contentinfo">
+      <div class="container">
+        
+
+        <ul class="footer-links">
+          <li>Copyright © LIST 2014</li>
+          <li class="muted">&middot;</li>
+          <li><a href="http://www.miitbeian.gov.cn/">浙ICP备05074421号</a></li>
+          <li class="muted">&middot;</li>
+          <li>地址：中国·杭州</li>
+          <li class="muted">&middot;</li>
+          <li>邮编：310027</li>
+        </ul>
+      </div>
+    </footer>
+
+    <!-- JS and analytics only. -->
+    <!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="http://cdn.bootcss.com/jquery/1.10.2/jquery.min.js"></script>
+
+<!-- Bootstrap core JS file
+  注意：此文件跟随官网最新版本更新，随时会有改变。建议使用下面v3.0.3版本的CDN链接！
+ -->
+<script src="./dist/js/bootstrap.js"></script>
+
+<!-- Hi，如果你要在自己的网站上引入bootstrap JS文件的话，请使用当前最新版本v3.0.3的CDN链接，页面加载速度会更快！
+<script src="http://cdn.bootcss.com/twitter-bootstrap/3.0.3/js/bootstrap.min.js"></script>
+-->
+
+<script src="http://cdn.bootcss.com/holder/2.0/holder.min.js"></script>
+<script src="http://cdn.bootcss.com/highlight.js/7.3/highlight.min.js"></script>
+<script >hljs.initHighlightingOnLoad();</script>
+
+<script src="./docs-assets/js/application.js"></script>
+
+
+
+<!-- Analytics
+================================================== -->
+    <script type="text/javascript">
+    var _bdhmProtocol = (("https:" == document.location.protocol) ? " https://" : " http://");
+    document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3F3d8e7fc0de8a2a75f2ca3bfe128e6391' type='text/javascript'%3E%3C/script%3E"));
+    </script>
+
+
+  </body>
+</html>
+

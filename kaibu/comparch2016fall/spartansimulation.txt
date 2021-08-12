@@ -1,0 +1,17 @@
+仿真步骤：
+1. New source->Verilog Test Fixture添加一个top模块的仿真代码段。
+2. (以实验一为例)代码endmodule前加入如下代码：
+
+always begin
+    #20; //延迟20ns
+    CCLK <= ~CCLK; //板载时钟仿真量取反
+end
+
+always begin
+    #20000000; //延迟20ms
+    BTN3_IN <= ~BTN3_IN; //CCLK按键仿真量取反
+end
+
+3.View->Simulation中对新加入的仿真代码段进行Simulate Behavioral Model
+
+4.拖入你需要仿真的部分到Name段，然后在工具栏输入处输出你要仿真的时长(一般1s~3s)，然后点击左边Restart，再点击Run for the time specified on the toolbar

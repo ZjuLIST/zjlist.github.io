@@ -1,0 +1,119 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8" />
+	<meta name="description" content="Your description goes here" />
+	<meta name="author" content="Your Name | Design by andreasviklund.com" />
+	<link href='http://fonts.googleapis.com/css?family=Lato' rel='stylesheet' type='text/css' />
+	<link href='http://fonts.googleapis.com/css?family=Alegreya+SC' rel='stylesheet' type='text/css' />
+	<link rel="stylesheet" type="text/css" href="comparc.css" title="Computer Architecture" media="all" />
+	<meta name="viewport" content="width=device-width, initial-scale=0.6" />
+	<title>Computer Architecture</title>
+</head>
+
+<body class="light">
+<div id="layout">
+ 
+	<div class="row">
+		<div class="col c12 alignright navmenu">
+			<p>
+				<a href="index.html" class="current">Overview</a>
+				<a href="schedule.html">Schedule</a>
+				<a href="lab.html"><u><strong>Lab</strong></u></a>
+				<a href="research.html">Research</a>
+			</p>
+		</div>
+	</div>	
+
+	<h2>Introduction to Computer Architecture</h2>
+	<font size=4pt>College of Computer Science and Technology, Zhejiang University, Fall 2017
+	<br>Wednesday 13:15/14:05 - 17:30, No. 4 Teaching Building
+	<br>Room 409 Lecture, Room 301 Lab
+	</font>
+	
+	<p></p>
+	
+	<h3>Acknowledgement</h3>
+	<p>The lab materials heavily follow the design from <a href="http://mypage.zju.edu.cn/jiangxh" target=_blank>Prof. Xiaohong Jiang</a>, who provides generous help to develop other course materials as well.</p>
+	
+	<h3>Lab Objective</h3>
+	<table>
+	<tr>
+		<td>1.&nbsp</td>
+		<td>Learn the operation of Spartan3E Board and the usage of ISE. </td>
+	</tr>
+	<tr>
+		<td>2.&nbsp</td>
+		<td>Understand the principle of the pipelined CPU and MIPS instructions.</td>
+	</tr>
+	<tr>
+		<td>3.&nbsp</td>
+		<td>Design the pipelined CPU that can execute 31 MIPS instructions correctly on Spartan3E board step by step according to the project tutorial.</td>
+	</tr>
+	</table>
+	<p></p>
+	
+	<h3>Lab Sessions</h3>
+	<table>
+		<tr>
+			<td>&nbsp</td>
+			<td><a href="http://list.zju.edu.cn/kaibu/comparch/lab0.pdf" target=_blank>Introduction</a></td>
+		</tr>
+		<tr>
+			<td><a href="http://list.zju.edu.cn/kaibu/comparch/lab1.pdf" target=_blank>Lab 1</a>&nbsp<br>&nbsp<br>&nbsp<br>&nbsp</td>
+			<td>Review & warmup the experiment environment of the course Computer Organization:<br>Spartan 3E board, ISE environment;<br>Try to update verilog code of the display part of multi-cycle CPU to make it run correctly on 3E board;<br>Try to add one new branch instruction.</td>
+		</tr>
+		<tr>
+			<td><a href="http://list.zju.edu.cn/kaibu/comparch/lab2.pdf" target=_blank>Lab 2</a>&nbsp</td>
+			<td>Implement 5-stage pipelined CPU with 15 MIPS instructions.</td>
+		</tr>
+		<tr>
+			<td><a href="http://list.zju.edu.cn/kaibu/comparch/lab3.pdf" target=_blank>Lab 3</a>&nbsp</td>
+			<td>Implement "stall" that makes CPU correctly execute instructions against pipelining hazards.</td>
+		</tr>
+		<tr>
+			<td><a href="http://list.zju.edu.cn/kaibu/comparch/lab4.pdf" target=_blank>Lab 4</a>&nbsp</td>
+			<td>Implement “forwarding paths” toward faster CPU.</td>
+		</tr>
+		<tr>
+			<td><a href="http://list.zju.edu.cn/kaibu/comparch/lab5.pdf" target=_blank>Lab 5</a>&nbsp<br>&nbsp</td>
+			<td>Implement a pipelined CPU with 31 MIPS instructions;<br>Use predict-not-taken policy to solve control hazard.</td>
+		</tr>
+		<tr>
+			<td>Lab 6&nbsp<br>&nbsp</td>
+			<td>Cache implementation - TBD<br>&nbsp</td>
+		</tr>
+	</table>
+	<p></p>
+	
+	<h3>Grading: 32%</h3>
+	<table>
+	<tr>
+	<td>2%&nbsp</td>
+	<td>Participation & performance</td>
+	</tr>
+	<tr>
+	<td>5%</td>
+	<td>Each of Lab 1 to Lab 6</td>
+	</tr>
+	<tr>
+	</table>
+	<p>Notes: A demo of the experiment result is required during the lab session; a report should be submitted per instructions.</p>
+	
+	<h3>Report</h3>
+	<a href="Lab_report_template.doc">Report template</a><br>
+	Report Submission Website: <a href="http://10.78.18.200:8080/Platform/" target=_blank>http://10.78.18.200:8080/Platform/</a> intranet only, register with zju email address   
+	<p></p>	
+
+	<h3>Lab Opening Hours</h3>
+	<p>TBD</p>
+	
+	<div class="row">
+		<div class="col c12 alignright">
+			<p><span class="larger">&copy; 2016 Kai Bu</span><br />
+			<a href="http://andreasviklund.com/dt_portfolio/leaves/">Template design</a> by <a href="http://andreasviklund.com/">Andreas Viklund</a>
+		</div>
+	</div>
+</div>
+</body>
+</html>

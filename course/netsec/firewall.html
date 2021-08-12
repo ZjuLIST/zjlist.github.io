@@ -1,0 +1,198 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html><head>
+    <title>Network Penetration and Security — EECS 354 </title>
+    <meta http-equiv="Content-type" content="text/html; charset=UTF-8">
+    <link href="style/global.css" rel="stylesheet" type="text/css">
+    
+<link href="Network%20Penetration%20and%20Security%20%E2%80%94%20EECS%20354_files/wiki.htm" rel="stylesheet" type="text/css">
+
+</head>
+<body>
+
+  <div id="header">
+    <h1>Network Penetration and Security</h1>
+    <h2>Northwestern EECS, Fall Quarter 2014</h2>
+  </div>
+  <ul id="navigation">
+    
+    <li><a href="http://hamsa.cs.northwestern.edu/">Home</a></li>
+    <li><a href="http://hamsa.cs.northwestern.edu/schedule/">Schedule</a></li>
+    <li><a href="http://hamsa.cs.northwestern.edu/readings/">Readings</a></li>
+    <li><a href="http://hamsa.cs.northwestern.edu/projects/">Projects</a></li>
+
+    
+    
+    <li class="right"><a href="http://hamsa.cs.northwestern.edu/login/">Login</a></li>
+    
+    <li class="right"><a href="http://groups.google.com/group/nuctf">Newsgroup</a></li>
+  </ul>
+  
+  <div id="content">
+    
+  
+  <h1>防火墙</h1>
+
+<h2>简介</h2>
+<p><code>Iptables</code>是大多数现代的 Linux 发行版中包含的一个数据包筛选器。它包括很多有用的高级功能，几乎可以做防火墙级别的任何事情，但本教程将侧重基础知识。</p>
+<p>所有的规则都是通过命令行选项创建和修改，传递给 
+iptables的。一些GUI工具也可以做到这一点，但往往功能要少得多。在这个示例中，您必须root用户权限（sudo）来运行iptables。
+助教们可以在netsec-demos上做到这一点，但你可能需要在自己的机器上运行。<br>
+
+</p>
+<p>Iptables将保存你创建的规则直到计算机重新启动，于是另一个解决方案永久性地添加所需的任何规则。大多数发行版包括两个脚本，<code>iptables-save</code> 和 <code>iptables-restore</code>。本教程不会考虑规则集的保存问题。
+</p>
+
+<h2>基本规则</h2>
+<p>Iptables 
+是基于规则运作的。规则采用自上而下地匹配，应用第一个匹配到的规则。因此，具体的规则应置于一般的规则之上。例如，一个规则来允许所有 SSH 
+数据包应该在另外一条拒绝所有的数据包规则的上方，以便允许 SSH 连接但拒绝所有其他连接。每个规则都可以通过<code>iptables</code> 指定。<br>
+</p>
+<p>switch首先指定这条规则适用于哪个表和哪条链，它适用于哪些数据包，以及匹配后这个数据包怎么处理。</p>
+
+<h2>表和链</h2>
+<p>Iptables允许使用不同的<code>tables</code>和<code>chains</code>。这里主要有三个表：<code>filter</code>, <code>nat</code>, 和<code>mangle</code>。每一个表都有对应的链来实现他们的功能。<br>
+
+</p>
+<p>用户还可以追加特殊的规则到新链。例如，在Redhat发行版中，GUI 防火墙
+配置工具生成一个自定义的input链来区分 GUI 生成
+的规则和用户创建的规则。</p>
+<p>如果没有指定表，则<code>filter</code> 是默认的表; 这
+表将最终解析决定所有的数据包的去向，基于每个数据包的特征决定
+丢弃还是接受数据包。它包括 3
+条默认链: <code>input</code>、 <code>output</code> 和 <code>FORWARD</code>。这些链分别表示入站、 出站和转发数据包 (即当前主机作为一个路由器代理时)。
+</p>
+<p><code>nat</code> 处理网络地址转换，包括两条链: prerouting 和 postrouting。这允许我们基于数据包特征来改变数据包的源地址或目标地址。这个表的两个常见的用法是端口转发和共享互联网连接。
+</p>
+<p><code>mangle</code>包含其他两个表中的链，并允许修改数据包字段如TOS、 TTL 等。
+</p>
+
+<h2>命令行选项</h2>
+<ul>
+ <li>
+     <code>-L</code>列出所有规则</li>
+
+ <li>
+     <code>-F</code>释放所有规则</li>
+
+ <li>
+     <code>-P &lt;chain&gt; &lt;target&gt;</code> 设置数据包的默认规则，当数据包没有被匹配到时执行默认规则；默认的是<code>ACCEPT</code>, 更好的做法是允许所有合法的数据包并设置默认规则为<code>DROP</code>
+ </li>
+
+ <li>
+     <code>-A &lt;chain&gt; &lt;rule&gt;</code>添加一条规则到链的末尾</li>
+
+ <li>
+     <code>-D &lt;chain&gt; &lt;rulenum&gt;</code>通过规则序列从链中删除一条规则</li>
+
+ <li>
+     <code>-I &lt;chain&gt; &lt;rulenum&gt;</code>类似于append，但是直接插入到指定的位置</li>
+</ul>
+
+<h2>Rule Specifications</h2>
+<p>当添加规则时，switches必须指定由什么构成一次匹配。最典型是基于IP地址，端口号，协议和连接状态。</p>
+<p>这些都可以通过下面的参数来指定：</p>
+<ul>
+ <li>
+     <code>--dport &lt;portnumber&gt;</code>通过目的端口进行匹配。</li>
+
+ <li>
+     <code>--sport &lt;portnumber&gt;</code>通过源端口进行匹配。</li>
+
+ <li>
+  <code>-d &lt;ipaddress/hostname&gt;</code>通过目的地址进行匹配</li>
+
+ <li>
+     <code>-s &lt;ipaddress/hostname&gt;</code>通过源地址进行匹配</li>
+
+ <li>
+     <code>-p &lt;protocol&gt;</code>通过协议进行匹配(tcp, udp, icmp, etc)</li>
+</ul>
+<p>Iptables通过<code>-m</code> 选项使用扩展匹配。这将允许使用特定的扩展。一个常用的是状态，即连接状态跟踪。
+</p>
+<p>例如，这使我们能够建立规则，只允许已经建立连接的数据包入站
+(即，那些TCP的非SYN 数据包)。以此来确保我们总是可以对外进行连接，但其他人不可以主动连接。</p>
+<p>下面是一些使用 <code>-m state</code>选项的常用例子:
+</p>
+<ul>
+ <li>
+     <code>-m state --state RELATED,ESTABLISHED</code>匹配部分处于连接中的数据包</li>
+
+ <li>
+     <code>-m state --state NEW</code>匹配尝试建立新连接的数据包</li>
+</ul>
+
+<h2>目标</h2>
+<p>所有的规则最后必须以目标跳转为结尾。此选项指定一个规则匹配时的操作。</p>
+<p>这里有一些通用的目标操作 (但并不是所有的这些操作都可以适用所有表):</p>
+<ul>
+ <li>
+     <code>-j ACCEPT</code>接受或允许一个指定的数据包</li>
+
+ <li>
+     <code>-j REJECT</code>拒绝并回复一个包</li>
+
+ <li>
+     <code>-j DROP</code>丢弃并且不回复</li>
+
+ <li>
+     <code>-j DNAT</code>修改目的地址 (端口转发)</li>
+
+ <li>
+     <code>-j MASQUERADE</code>修改源地址或者IP mask</li>
+</ul>
+
+<h2>练习</h2>
+<p>如果你有root权限的 VM，请尝试使用这些命令设置防火墙
+。这将有助于熟悉防火墙规则。每个人都应该做这一部分，因为这一部分内容会影响到实验的成绩。</p>
+<p>首先，请尝试使用下列选项设置您的计算机，只允许到netcat服务器的连接。然后运行nmap扫描你的机器</p>
+<p>通过下面的命令简历一个netcat服务：</p>
+<pre><code>nc -l -p 2500
+</code></pre><p>确保你的iptables规则已经被清空了：</p>
+<pre><code>iptables -F
+</code></pre><p>确保本机的ssh流量不被禁止：</p>
+<pre><code>iptables -A INPUT -p tcp --dport 22 -j ACCEPT
+</code></pre><p>设置<code>INPUT</code>策略丢弃所有的流入数据包：</p>
+<pre><code>iptables -P INPUT DROP
+</code></pre><p>请注意，这将阻止你的出站连接。(可以尝试下载一个网页)。为什么呢？远程服务器响应的SYN Ack和 DNS
+与其他所有的流入数据包一样，都会被丢弃。接下来，让我们允许所有相关和建立链接的数据包进入，这样我们可以对外建立连接。</p>
+<pre><code>iptables -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
+</code></pre><p>现在，你应该可以访问自己的网站了，但是其他人还无法建立到你服务器的链接。你可以通过<code>nc localhost 2500</code>尝试建立到自己服务器的连接。</p>
+<p>为了让服务器能够被访问，添加一条规则来允许目的端口为2500的SYN数据包。</p>
+<pre><code>iptables -A INPUT -p tcp -m state --state NEW --dport 2500 -j ACCEPT
+</code></pre><p>你可以尝试添加一些其他规则，例如：讲2500端口转发到其他地址：</p>
+<pre><code>iptables -A FORWARD -d &lt;destinationip&gt; -p tcp --dport 2500 -j ACCEPT
+iptables -A PREROUTING -p tcp --dport 2500 -j DNAT --to-destination &lt;destinationip&gt;:2500
+</code></pre>
+<h2>课堂任务</h2>
+<p>从<a href="http://hamsa.cs.northwestern.edu/media/projects/firewall-and-ids.tgz">这里</a>下载防火墙项目的实验描述，完成下文中的任务：</p>
+
+<h2>Part A</h2>
+<p>对于这部分的任务，你需要配置一个防火墙。你的规则可以以iptables命令行的形式给出，方便之后的实验。</p>
+<p>将你的规则添加到iptables中。文件中包含一个简单的样例规则用以说明规则的格式，该规则或丢弃所有的流入数据包。</p>
+<p>你的防火墙必须完成以下功能：</p>
+<ul>
+ <li>在6407, 3506, 2503, 和 8505 端口允许流入的连接</li>
+
+ <li>允许已经建立或相关的流入通信</li>
+
+ <li>不允许其他流入通信</li>
+
+ <li>允许所有的流出流量</li>
+</ul>
+
+<h2>Part B</h2>
+<p>对于第二部分实验，你需要写snort规则来检测简单的蠕虫。</p>
+<p>你的规则需要完成以下功能：</p>
+<ul>
+ <li>保护系统以防止蠕虫攻击，目前已知该蠕虫在UDP端口4004或TCP端口8008上监听，并且特征码为"03 0E FE CC A0"。</li>
+
+ <li>如果能够探测到上述攻击，显示相应的攻击警告 "TCP Simple Worm detected!"或者"UDP Simple Worm detected!"</li>
+</ul>
+<p>在提交实验之前，你应该可以看到上述两个部分实验的结果。如果完成了所有的实验，你可以在本实验中获得75分。</p>
+
+  </div>
+
+
+
+<div id="link64_vdp_tabid" style="display:none;">1005</div>
+</body></html>

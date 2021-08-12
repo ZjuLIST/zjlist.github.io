@@ -1,0 +1,211 @@
+﻿
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <head>
+    <!-- Meta, title, CSS, favicons, etc. -->
+    <meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="浙江大学互联网安全实验室">
+<meta name="author" content="Jarvis W.">
+
+<title>
+  
+    浙江大学互联网安全实验室
+  
+</title>
+
+<!-- Bootstrap core CSS 
+  注意：此文件跟随官网最新版本更新，随时会有改变。建议使用下面v3.0.3版本的CDN链接！
+ -->
+<link href="./dist/css/bootstrap.min.css" rel="stylesheet">
+
+<!-- Hi，如果你要在自己的网站上引入bootstrap样式文件的话，请使用当前最新版本v3.0.3的CDN链接，页面加载速度会更快！
+<link rel="stylesheet" href="http://cdn.bootcss.com/twitter-bootstrap/3.0.3/css/bootstrap.min.css">
+-->
+
+<!-- Documentation extras -->
+<link href="./docs-assets/css/docs.css" rel="stylesheet">
+<link href="http://cdn.bootcss.com/highlight.js/7.3/styles/github.min.css" rel="stylesheet">
+<style>
+body{font-family:"ff-tisa-web-pro-1","ff-tisa-web-pro-2","Lucida Grande","Helvetica Neue",Helvetica,Arial,"Hiragino Sans GB","Hiragino Sans GB W3","WenQuanYi Micro Hei",sans-serif;}
+h1, .h1, h2, .h2, h3, .h3, h4, .h4, .lead {font-family:"ff-tisa-web-pro-1","ff-tisa-web-pro-2","Lucida Grande","Helvetica Neue",Helvetica,Arial,"Hiragino Sans GB","Hiragino Sans GB W3","Microsoft YaHei UI","Microsoft YaHei","WenQuanYi Micro Hei",sans-serif;}
+pre code { background: transparent; }
+@media (min-width: 768px) {
+    .bs-docs-home .bs-social, 
+    .bs-docs-home .bs-masthead-links {
+      margin-left: 0;
+    }
+}
+
+.bs-docs-section p {
+	line-height: 2;
+}
+
+.bs-docs-section p.lead {
+	line-height: 1.4;
+}
+
+
+</style>
+
+<!--[if lt IE 9]><script src="./docs-assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
+
+<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+<!--[if lt IE 9]>
+  <script src="http://cdn.bootcss.com/html5shiv/3.7.0/html5shiv.min.js"></script>
+  <script src="http://cdn.bootcss.com/respond.js/1.3.0/respond.min.js"></script>
+<![endif]-->
+
+<!-- Favicons -->
+<link rel="apple-touch-icon-precomposed" sizes="144x144" href="./docs-assets/ico/logo.jpg">
+                               <link rel="shortcut icon" href="./docs-assets/ico/favicon.png">
+
+
+
+  </head>
+  <body class="bs-docs-home">
+    <a class="sr-only" href="#content">Skip to main content</a>
+
+    <!-- Docs master nav -->
+    <header class="navbar navbar-inverse navbar-fixed-top bs-docs-nav" role="banner">
+  <div class="container">
+    <div class="navbar-header">
+      <button class="navbar-toggle" type="button" data-toggle="collapse" data-target=".bs-navbar-collapse">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a href="./" class="navbar-brand">浙江大学互联网安全实验室</a>
+    </div>
+    <nav class="collapse navbar-collapse bs-navbar-collapse" role="navigation">
+      <ul class="nav navbar-nav">
+        <li class="active">
+          <a href="#">实验室简介</a>
+        </li>
+        <li>
+          <a href="./human.html">实验室成员</a>
+        </li>
+        <li>
+          <a href="./projects.html">项目小组</a>
+        </li>
+        <li>
+	<li>
+          <a href="./Internet.html">教授课程</a>
+        </li>
+        <li>
+
+          <a href="./achievements.html">研究成果</a>
+        </li>
+        <li>
+          <a href="./address.html">地址</a>
+        </li>
+
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+          <a href="mailto:ychen@northwestern.edu">联系我们</a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+
+    <!-- Page content of course! -->
+    
+
+<main class="bs-masthead" id="content" role="main">
+  <div class="container">
+    <h1><img src="./docs-assets/ico/logo.jpg" alt="浙江大学互联网安全实验室" width=144 height=144 border=0>   实验室情况介绍</h1>
+    <p class="lead">主要研究方向为网络和系统安全、软件安全。</p>
+    <h2>NEWS</h2>
+    <blockquote>
+  <p>  热烈祝贺陈焰老师被评选为IEEE Fellow（2017）。</p>
+    </blockquote>
+	<blockquote>
+	<p>	 热烈祝贺实验室博士生朱添田同学的论文Beating the Artificial Chaos: Fighting OSN Spam using Its Own Templates在计算机网络领域A类期刊IEEE/ACM Transactions on Networking上录用并发表（2016）。</p>
+    </blockquote>
+    <blockquote>
+	<p>	 热烈祝贺实验室博士生何博远同学以学生身份应中国计算机学会（CCF）互联网专业委员会（CCF TCI）邀请，作为特邀演讲嘉宾参加第四届中国互联网学术年会（ICOC2015），并作“如何做高水平的研究和准备高水平的论文”的发言，研究成果获得同行学者的高度评价。</p>
+    </blockquote>
+    <blockquote>
+        <p>热烈祝贺实验室本科实习生张振瑞同学被Carnegie Mellon University计算机科学硕士项目录取。该同学在留学申请中，一共收到了来自　Carnegie Mellon University（计算机科学，计算数据科学），　University of Pennsylvania，　Columbia University，　Yale University，University of Southern California，University of Toronto和University of Waterloo共7所北美名校的录取通知，其中University of Toronto与University of Waterloo两所大学提供奖学金。张振瑞同学从大三下学期开始加入实验室，从事程序语言分析相关的课题研究，是信息安全领域顶级会议IEEE S&P 2015论文Vetting SSL Usage in Applications with SSLINT的作者之一，并在实验室完成了本科毕业论文。</p>
+    </blockquote>
+    <blockquote>
+    	<p>
+	热烈祝贺实验室本科实习生陈铭业，最终被Columbia University计算机科学硕士项目录取。该同学在留学申请中收到了来自Carnegie Mellon University，Columbia University，University of Southern California等名校的录取通知。该同学从大三开始加入实验室，顺利完成计算机学院第28期大学生科研训练计划并取得了不错的成果。
+	</p>
+    </blockquote>
+    <blockquote>
+        <p>热烈祝贺实验室博士生何博远同学的论文Vetting SSL Usage in Applications with SSLINT 被信息安全领域国际顶级学术会议IEEE Symposium on Security & Privacy 2015录用。这是浙大首次在信息安全领域国际顶级学术会议上发表论文，实现了零的突破。同时，浙大也成为继北大（2010年），清华（2014年）之后，大陆第三家（与中科院信息工程研究所并列）在该会议上发表论文的科研机构。IEEE Symposium on Security & Privacy（IEEE S&P）创办于1980年，是信息安全领域历史最悠久的国际顶级学术会议。该会议以评审严格著称，近5年录用率均在12%左右，是信息安全领域四大国际顶级学术会议（IEEE S&P, ACM CCS, NDSS, USENIX Security）中最低的一个。
+何博远同学的工作是在陈焰教授的指导下，由来自哥伦比亚大学，美国西北大学，伊利诺伊大学芝加哥分校等多家单位的作者合作完成。团队长期以来致力基于程序语言分析技术的软件漏洞的自动化检测研究。利用静态代码分析技术，实现了基于程序依赖图结构的自动化漏洞扫描及定位。通过对SSL证书认证漏洞进行建模，成功在数百万行开源软件代码中找到了27个0-day漏洞。这些漏洞主要集中在IRC客户端，邮件客户端等应用程序中，给用户隐私安全造成了严重的威胁。目前，所有漏洞均已提交开源社区，部分已得到修复。</p>
+    </blockquote>
+    <h2>团队简介</h2>
+    <blockquote>
+    	<p>　　团队负责人陈焰教授是国家千人计划教授，IEEE Fellow，浙江省移动终端安全工程实验室主任, 浙江大学网络空间安全研究中心学术委员会共同主任。2013年被邀请为中国互联网企业安全工作组学术委员会成员。陈焰教授于2003年12月获得UC Berkeley计算机科学博士学位。 现同时为Northwestern University（US News & World Report排名全美第十二）电子工程与计算机科学系终身教授, 2012 年创立浙大-西北联合互联网安全实验室并任主任。2005年获得美国能源部青年成就奖（Early CAREEA Award），2007年获得美国国防部青年学者奖（Young Investigator Award）。2004和2005年两度获得Microsoft可信计算奖（Trustworthy Computing Awards）。2010年获计算机网络顶会ACM SIGCOMM 最佳论文提名,  和2018年系统顶会 ACM ASPLOS 最具影响力论文奖。  担任 ACM/IEEE ToN的副主编及等多个著名国际会议程序委员会主席，并担任ACM CCS 2011主席。截至2018年10月，Google Scholar显示，论文总引用过万次，H-index指数为49。</p>
+    	<P>　　团队主要成员卜凯，副教授。于2013年获香港理工大学电子计算学系博士学位，加入浙江大学任计算机科学与技术学院。主要研究方向为无线网络及网络安全，曾获得IEEE/IFIP EUC 2011 Best Paper Award (第二作者)。</p>
+    	<p>　　交流合作：本团队与Northwestern University（美国）互联网安全技术实验室有密切合作。基本上所有项目都有双方学生共同参与合作研究。本实验室的博士生也会到美方实验室访问1-2年。详见<a href=http://list.cs.northwestern.edu>http://list.cs.northwestern.edu</a>.</p>
+    </blockquote>
+    <h2>获奖信息</h2>
+    <blockquote>
+      <p>祝贺李星获得国家奖学金（2016-2017学年）。</p>
+        <p>祝贺朱添田获得中国互联网发展基金会网络安全专项基金网络安全奖学金（2017）。</p>
+  
+    </blockquote>
+    <p>
+      <!-- <a href="https://github.com/twbs/bootstrap/releases/download/v3.0.3/bootstrap-3.0.3-dist.zip" class="btn btn-outline-inverse btn-lg" >下载Bootstrap</a> -->
+      <!-- <a href="https://github.com/twbs/bootstrap/archive/v3.0.3.zip" class="btn btn-outline-inverse btn-lg" >下载源码</a> -->
+      <!-- <a href="./getting-started" class="btn btn-outline-inverse btn-lg">开始看文档</a> -->
+    </p>
+  </div>
+  <div class="container">
+  </div>
+</main>
+
+
+    <footer class="container" role="contentinfo">
+      
+
+      <ul class="bs-masthead-links">
+        <li class="current-version">
+          Copyright ? LIST 2014
+        </li>
+        <li>
+          <a href="http://www.miitbeian.gov.cn/">浙ICP备05074421号</a>
+        </li>
+        <li>
+          地址：中国·杭州
+        </li>
+        <li>
+          邮编：310027
+        </li>
+      </ul>
+    </footer>
+
+    <!-- JS and analytics only. -->
+    <!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="http://cdn.bootcss.com/jquery/1.10.2/jquery.min.js"></script>
+
+<!-- Bootstrap core JS file
+  注意：此文件跟随官网最新版本更新，随时会有改变。建议使用下面v3.0.3版本的CDN链接！
+ -->
+<script src="./dist/js/bootstrap.js"></script>
+
+<!-- Hi，如果你要在自己的网站上引入bootstrap JS文件的话，请使用当前最新版本v3.0.3的CDN链接，页面加载速度会更快！
+<script src="http://cdn.bootcss.com/twitter-bootstrap/3.0.3/js/bootstrap.min.js"></script>
+-->
+
+<script src="http://cdn.bootcss.com/holder/2.0/holder.min.js"></script>
+<script src="http://cdn.bootcss.com/highlight.js/7.3/highlight.min.js"></script>
+<script >hljs.initHighlightingOnLoad();</script>
+
+<script src="./docs-assets/js/application.js"></script>
+
+
+  </body>
+</html>
+
